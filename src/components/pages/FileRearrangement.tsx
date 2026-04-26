@@ -183,7 +183,7 @@ const FileRearrangement: React.FC<FileRearrangementProps> = ({
                     className={`flex items-center gap-3 mb-2 p-3 rounded-md cursor-grab border hover:bg-gray-50 transition-colors ${
                       draggedItemId === fileItem.id ? 'opacity-50' : ''
                     } ${activeFileIndex === index ? 'bg-gray-100' : ''} ${
-                      dragOver === index && draggedItemId !== fileItem.id ? 'border-docsewa-400 bg-docsewa-50' : ''
+                      dragOver === index && draggedItemId !== fileItem.id ? 'border-blue-400 bg-blue-50' : ''
                     }`}
                     onClick={() => handlePreviewClick(index)}
                   >
@@ -259,7 +259,7 @@ const FileRearrangement: React.FC<FileRearrangementProps> = ({
                 Cancel
               </Button>
               <Button 
-                className="bg-docsewa-600 hover:bg-docsewa-700"
+                className="bg-blue-600 hover:bg-blue-700"
                 onClick={onContinue}
                 disabled={filesWithPreview.length === 0}
               >

@@ -22,9 +22,9 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
       onDrop={onDrop}
       onDragOver={onDragOver}
     >
-      <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 flex flex-col items-center justify-center bg-white hover:border-docsewa-400 transition-all duration-300">
-        <div className="w-16 h-16 rounded-full bg-docsewa-50 flex items-center justify-center mb-5">
-          <Upload className="h-8 w-8 text-docsewa-500" />
+      <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 flex flex-col items-center justify-center bg-white hover:border-blue-400 transition-all duration-300">
+        <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-5">
+          <Upload className="h-8 w-8 text-blue-500" />
         </div>
         <h3 className="text-xl font-medium text-gray-800 mb-2">Upload your files</h3>
         <p className="text-gray-500 text-center mb-5">
@@ -40,7 +40,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
             accept={acceptedFileTypes}
             multiple={multiple}
           />
-          <div className="py-2.5 px-5 bg-docsewa-500 text-white font-medium rounded-lg hover:bg-docsewa-600 transition-all duration-300 flex items-center">
+          <div className="py-2.5 px-5 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center">
             Browse Files
           </div>
         </label>

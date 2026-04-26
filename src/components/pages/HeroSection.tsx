@@ -1,6 +1,5 @@
-
 import React from 'react';
-import FileUploadZone from './FileUploadZone'
+import FileUploadZone from './FileUploadZone';
 
 interface HeroSectionProps {
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

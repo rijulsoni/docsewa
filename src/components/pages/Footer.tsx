@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between">
           <div className="mb-6 md:mb-0">
-            <h3 className="text-xl font-bold text-docsewa-600 bg-gradient-to-r from-docsewa-600 to-purple-600 bg-clip-text text-transparent">
+            <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               DocSewa
             </h3>
             <p className="mt-2 text-gray-600 max-w-md">
@@ -18,20 +18,20 @@ const Footer = () => {
             <div>
               <h4 className="text-sm font-semibold text-gray-900 uppercase mb-2">Tools</h4>
               <ul className="text-gray-600">
-                <li className="mb-2"><a href="/image-to-pdf" className="hover:text-docsewa-600">Image to PDF</a></li>
-                <li className="mb-2"><a href="/pdf-to-image" className="hover:text-docsewa-600">PDF to Image</a></li>
-                <li className="mb-2"><a href="/merge-pdf" className="hover:text-docsewa-600">Merge PDF</a></li>
-                <li className="mb-2"><a href="/extract-text" className="hover:text-docsewa-600">Extract Text</a></li>
+                <li className="mb-2"><a href="/image-to-pdf" className="hover:text-blue-600">Image to PDF</a></li>
+                <li className="mb-2"><a href="/pdf-to-image" className="hover:text-blue-600">PDF to Image</a></li>
+                <li className="mb-2"><a href="/merge-pdf" className="hover:text-blue-600">Merge PDF</a></li>
+                <li className="mb-2"><a href="/extract-text" className="hover:text-blue-600">Extract Text</a></li>
               </ul>
             </div>
             
             <div>
               <h4 className="text-sm font-semibold text-gray-900 uppercase mb-2">Help</h4>
               <ul className="text-gray-600">
-                <li className="mb-2"><a href="#" className="hover:text-docsewa-600">FAQ</a></li>
-                <li className="mb-2"><a href="#" className="hover:text-docsewa-600">Contact Us</a></li>
-                <li className="mb-2"><a href="#" className="hover:text-docsewa-600">Privacy</a></li>
-                <li className="mb-2"><a href="#" className="hover:text-docsewa-600">Terms</a></li>
+                <li className="mb-2"><a href="#" className="hover:text-blue-600">FAQ</a></li>
+                <li className="mb-2"><a href="#" className="hover:text-blue-600">Contact Us</a></li>
+                <li className="mb-2"><a href="#" className="hover:text-blue-600">Privacy</a></li>
+                <li className="mb-2"><a href="#" className="hover:text-blue-600">Terms</a></li>
               </ul>
             </div>
           </div>

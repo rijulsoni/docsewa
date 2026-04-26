@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -20,9 +19,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => {
   return (
     <Link href={path} className="block group">
-      <div className={`rounded-xl p-6 h-full bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md hover:border-docsewa-200 ${gradient}`}>
+      <div className={`rounded-xl p-6 h-full bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md hover:border-blue-200 ${gradient}`}>
         <div className="flex flex-col h-full">
-          <div className="rounded-full bg-white p-3 w-16 h-16 flex items-center justify-center mb-4 text-docsewa-600 border border-gray-100">
+          <div className="rounded-full bg-white p-3 w-16 h-16 flex items-center justify-center mb-4 text-blue-600 border border-gray-100">
             {icon}
           </div>
           <h3 className="text-xl font-bold mb-2 text-gray-800">
@@ -32,7 +31,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
             {description}
           </p>
           <div className="mt-auto">
-            <span className="inline-flex items-center text-docsewa-600 font-medium group-hover:underline">
+            <span className="inline-flex items-center text-blue-600 font-medium group-hover:underline">
               Get Started
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </span>

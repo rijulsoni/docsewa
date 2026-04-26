@@ -1,8 +1,6 @@
-'use client';
-
 import React from 'react';
-import { FileText, Image, FileType, Files } from 'lucide-react';
 import Link from 'next/link';
+import { FileText, Image, FileType, Files } from 'lucide-react';
 
 interface ActionOption {
   title: string;
@@ -51,7 +49,7 @@ const ActionSelectionGrid: React.FC<ActionSelectionGridProps> = ({ filename }) =
           href={option.path}
           className="flex items-center p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
         >
-          <div className="w-10 h-10 rounded-full bg-docsewa-100 flex items-center justify-center mr-4 text-docsewa-600">
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-4 text-blue-600">
             {option.icon}
           </div>
           <div>

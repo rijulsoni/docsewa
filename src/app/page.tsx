@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ChevronRight, FileText, FilePlus, Image, FileImage, File } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,7 @@ const Index = () => {
         <Home />
       </div>
 
-      <section className="bg-gradient-to-r from-docsewa-600 to-blue-600 py-12 text-white">
+      <section className="bg-gradient-to-r from-blue-700 to-blue-600 py-12 text-white">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Documents?</h2>
@@ -26,7 +25,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Image to PDF</h3>
                 <p className="text-white/80 mb-4 text-center">Convert your images to professional PDF documents</p>
-                <Button variant="outline" className="border-white text-white hover:bg-white hover:text-docsewa-600 mt-auto">
+                <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 mt-auto">
                   Get Started <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
@@ -37,7 +36,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Merge PDFs</h3>
                 <p className="text-white/80 mb-4 text-center">Combine multiple PDF files into a single document</p>
-                <Button variant="outline" className="border-white text-white hover:bg-white hover:text-docsewa-600 mt-auto">
+                <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 mt-auto">
                   Get Started <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
@@ -48,7 +47,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Extract Text</h3>
                 <p className="text-white/80 mb-4 text-center">Extract text content from your PDF documents</p>
-                <Button variant="outline" className="border-white text-white hover:bg-white hover:text-docsewa-600 mt-auto opacity-75">
+                <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 mt-auto opacity-75">
                   Coming Soon
                 </Button>
               </div>

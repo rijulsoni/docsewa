@@ -1,29 +1,31 @@
 "use client"
-import React, { useState } from 'react'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Drawer, DrawerContent } from '@/components/ui/drawer'
-import { useIsMobile } from '@/hooks/use-mobile'
-
-import FeaturesSection from './FeaturesSection'
-import HowItWorks from './HowItWorks'
-import ActionSelectionGrid from './ActionSelectionGrid'
-import FileRearrangement from './FileRearrangement'
-import Navbar from './Navbar'
-import HeroSection from './HeroSection'
-import Footer from './Footer'
+import React, { useState } from 'react';
+import Navbar from './Navbar';
+import Footer from './Footer';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Drawer, DrawerContent } from '@/components/ui/drawer';
+import { useIsMobile } from '@/hooks/use-mobile';
+import HeroSection from './HeroSection';
+import FeaturesSection from './FeaturesSection';
+import HowItWorks from './HowItWorks';
+import ActionSelectionGrid from './ActionSelectionGrid';
+import FileRearrangement from './FileRearrangement';
+import ConversionOptions from './ConversionOptions';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 const Home = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isArrangementModalOpen, setIsArrangementModalOpen] = useState(false);
+  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const fileArray = Array.from(event.target.files);
       setFiles(fileArray);
-      setIsArrangementModalOpen(true);
+      setIsOptionsModalOpen(true);
     }
   };
   
@@ -32,7 +34,7 @@ const Home = () => {
     if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
       const fileArray = Array.from(event.dataTransfer.files);
       setFiles(fileArray);
-      setIsArrangementModalOpen(true);
+      setIsOptionsModalOpen(true);
     }
   };
   
@@ -51,6 +53,15 @@ const Home = () => {
 
   const handleCloseArrangement = () => {
     setIsArrangementModalOpen(false);
+  };
+  
+  const handleCloseOptions = () => {
+    setIsOptionsModalOpen(false);
+  };
+  
+  const handleContinueToArrangement = () => {
+    setIsOptionsModalOpen(false);
+    setIsArrangementModalOpen(true);
   };
 
   return (
@@ -73,14 +84,14 @@ const Home = () => {
         <HowItWorks />
         
         {/* Simple CTA Section */}
-        <section className="py-16 bg-docsewa-500 text-white">
+        <section className="py-16 bg-blue-500 text-white">
           <div className="container mx-auto px-6 text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to convert your documents?</h2>
             <p className="mb-8 max-w-2xl mx-auto">
               Get started now with our free document tools
             </p>
             <Button 
-              className="bg-white text-docsewa-600 hover:bg-gray-100"
+              className="bg-white text-blue-600 hover:bg-gray-100"
               size="lg"
               onClick={() => document.getElementById('upload-trigger')?.click()}
             >
@@ -98,9 +109,27 @@ const Home = () => {
         </section>
       </main>
       
+      {/* Conversion Options Modal/Drawer */}
+      {isMobile ? (
+        <Drawer open={isOptionsModalOpen} onOpenChange={setIsOptionsModalOpen}>
+          <DrawerContent>
+            <ConversionOptions files={files} onClose={handleCloseOptions} />
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Dialog open={isOptionsModalOpen} onOpenChange={setIsOptionsModalOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <ConversionOptions files={files} onClose={handleCloseOptions} />
+          </DialogContent>
+        </Dialog>
+      )}
+      
       {/* File Rearrangement Modal/Drawer */}
       {isMobile ? (
         <Drawer open={isArrangementModalOpen} onOpenChange={setIsArrangementModalOpen}>
+          <DialogTitle>
+            <VisuallyHidden>Rearrange files</VisuallyHidden>
+          </DialogTitle>
           <DrawerContent className="h-[85vh] max-h-[85vh]">
             <div className="px-1 py-1 h-full">
               <FileRearrangement 
@@ -114,6 +143,9 @@ const Home = () => {
         </Drawer>
       ) : (
         <Dialog open={isArrangementModalOpen} onOpenChange={setIsArrangementModalOpen}>
+          <DialogTitle>
+            <VisuallyHidden>Rearrange files</VisuallyHidden>
+          </DialogTitle>
           <DialogContent className="sm:max-w-[900px] p-0">
             <FileRearrangement 
               files={files}
@@ -128,9 +160,12 @@ const Home = () => {
       {/* Action Selection Modal/Drawer */}
       {isMobile ? (
         <Drawer open={isModalOpen} onOpenChange={setIsModalOpen}>
+             <DialogTitle>
+            <VisuallyHidden>Choose an Action</VisuallyHidden>
+          </DialogTitle>
           <DrawerContent>
             <div className="px-4 py-4">
-              <h3 className="text-lg font-medium mb-2">Choose an Action</h3>
+              <h3 className="text-lg font-medium mb-2"></h3>
               <p className="text-sm text-gray-500 mb-4">
                 {files.length} file{files.length !== 1 ? 's' : ''} selected
               </p>
@@ -145,6 +180,9 @@ const Home = () => {
         </Drawer>
       ) : (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+           <DialogTitle>
+            <VisuallyHidden>Choose an Action</VisuallyHidden>
+          </DialogTitle>
           <DialogContent className="sm:max-w-[500px]">
             <h3 className="text-lg font-medium mb-2">Choose an Action</h3>
             <p className="text-sm text-gray-500 mb-4">

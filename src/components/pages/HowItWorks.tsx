@@ -15,9 +15,9 @@ const HowItWorks: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <div className="flex justify-center mb-4">
-              <div className="w-14 h-14 bg-docsewa-100 rounded-full flex items-center justify-center text-docsewa-600 relative">
+              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 relative">
                 <Upload className="h-6 w-6" />
-                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-docsewa-500 text-white flex items-center justify-center text-sm font-medium">
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-medium">
                   1
                 </div>
               </div>
@@ -30,9 +30,9 @@ const HowItWorks: React.FC = () => {
           
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <div className="flex justify-center mb-4">
-              <div className="w-14 h-14 bg-docsewa-100 rounded-full flex items-center justify-center text-docsewa-600 relative">
+              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 relative">
                 <FileText className="h-6 w-6" />
-                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-docsewa-500 text-white flex items-center justify-center text-sm font-medium">
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-medium">
                   2
                 </div>
               </div>
@@ -45,11 +45,11 @@ const HowItWorks: React.FC = () => {
           
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <div className="flex justify-center mb-4">
-              <div className="w-14 h-14 bg-docsewa-100 rounded-full flex items-center justify-center text-docsewa-600 relative">
+              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 relative">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-docsewa-500 text-white flex items-center justify-center text-sm font-medium">
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-medium">
                   3
                 </div>
               </div>
