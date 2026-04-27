@@ -1,5 +1,6 @@
 import React from 'react';
 import FileUploadZone from './FileUploadZone';
+import { Shield, Zap, Lock } from 'lucide-react';
 
 interface HeroSectionProps {
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -8,39 +9,73 @@ interface HeroSectionProps {
   multiple?: boolean;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ 
+const HeroSection: React.FC<HeroSectionProps> = ({
   onFileChange,
   onDrop,
   onDragOver,
-  multiple = false
+  multiple = false,
 }) => {
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-white to-gray-50">
-      <div className="container mx-auto px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">
-            Transform Your Documents with Ease
+    <section className="relative py-24 md:py-32 overflow-hidden">
+      {/* Animated gradient blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+        <div className="animate-blob animation-delay-0 absolute top-1/4 -left-32 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl" />
+        <div className="animate-blob animation-delay-2000 absolute top-1/3 -right-32 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-3xl" />
+        <div className="animate-blob animation-delay-4000 absolute -bottom-24 left-1/3 w-[400px] h-[400px] bg-indigo-800/10 rounded-full blur-3xl" />
+      </div>
+
+      {/* Fine grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px',
+        }}
+      />
+
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.1] bg-white/[0.04] text-xs text-white/60 mb-8 backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+            Free · No sign-up · No data stored
+          </div>
+
+          {/* Headline */}
+          <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.08] tracking-tight mb-6">
+            <span className="gradient-text">Transform your</span>
+            <br />
+            <span className="accent-gradient-text">PDFs instantly</span>
           </h1>
-          
-          <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-            Convert, merge, and extract text from your documents in seconds.
-            No installation required — easy, secure, and free.
+
+          <p className="text-lg text-white/50 max-w-xl mx-auto mb-12 leading-relaxed">
+            Merge, split, convert and extract — professional PDF tools that run{' '}
+            <span className="text-white/70">securely in your browser</span>. No uploads needed.
           </p>
-          
-          <FileUploadZone 
+
+          {/* Upload zone */}
+          <FileUploadZone
             onFileChange={onFileChange}
             onDrop={onDrop}
             onDragOver={onDragOver}
             multiple={multiple}
           />
-          
-          <div className="flex justify-center">
-            <a 
-              href="#features" 
-              className="py-2.5 px-5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-300"
-            >
-              Explore All Tools
-            </a>
+
+          {/* Trust indicators */}
+          <div className="flex flex-wrap justify-center gap-6 text-xs text-white/35">
+            <span className="flex items-center gap-1.5">
+              <Lock className="h-3.5 w-3.5 text-indigo-400" />
+              Client-side processing
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Shield className="h-3.5 w-3.5 text-violet-400" />
+              Files never stored
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Zap className="h-3.5 w-3.5 text-emerald-400" />
+              Instant conversion
+            </span>
           </div>
         </div>
       </div>

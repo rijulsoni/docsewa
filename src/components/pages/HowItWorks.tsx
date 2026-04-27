@@ -1,64 +1,80 @@
 import React from 'react';
-import { Upload, FileText } from 'lucide-react';
+import { Upload, SlidersHorizontal, Download } from 'lucide-react';
+
+const steps = [
+  {
+    number: '01',
+    icon: <Upload className="h-5 w-5" />,
+    title: 'Upload your file',
+    description: 'Drag & drop or click to select. Supports PDF, JPG, PNG, and WebP.',
+    color: 'text-indigo-400',
+    glow: 'shadow-[0_0_20px_rgba(99,102,241,0.25)]',
+    bg: 'bg-indigo-500/10',
+    border: 'border-indigo-500/20',
+  },
+  {
+    number: '02',
+    icon: <SlidersHorizontal className="h-5 w-5" />,
+    title: 'Configure & convert',
+    description: 'Choose your settings — page range, format, quality — then hit convert.',
+    color: 'text-violet-400',
+    glow: 'shadow-[0_0_20px_rgba(139,92,246,0.25)]',
+    bg: 'bg-violet-500/10',
+    border: 'border-violet-500/20',
+  },
+  {
+    number: '03',
+    icon: <Download className="h-5 w-5" />,
+    title: 'Download instantly',
+    description: 'Your result is ready in seconds. No email, no waiting, no account needed.',
+    color: 'text-emerald-400',
+    glow: 'shadow-[0_0_20px_rgba(52,211,153,0.2)]',
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/20',
+  },
+];
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-gray-800">How It Works</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Complete your document tasks in three simple steps
+    <section className="py-24 relative">
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400 mb-4">
+            How it works
+          </p>
+          <h2 className="text-3xl md:text-5xl font-extrabold gradient-text leading-tight mb-4">
+            Three steps to done
+          </h2>
+          <p className="text-white/40 max-w-sm mx-auto text-base">
+            From file to result in under a minute
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <div className="flex justify-center mb-4">
-              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 relative">
-                <Upload className="h-6 w-6" />
-                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-medium">
-                  1
-                </div>
+
+        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {/* Connecting line */}
+          <div className="hidden md:block absolute top-10 left-[calc(16.67%+22px)] right-[calc(16.67%+22px)] h-px bg-gradient-to-r from-indigo-500/30 via-violet-500/30 to-emerald-500/30" />
+
+          {steps.map((step, i) => (
+            <div
+              key={i}
+              className={`relative glass-card rounded-2xl p-6 hover:border-white/[0.14] hover:shadow-[0_0_30px_rgba(94,106,210,0.1)] transition-all duration-300`}
+            >
+              {/* Number badge */}
+              <div className={`absolute -top-3 left-6 text-xs font-mono font-bold px-2 py-0.5 rounded-full ${step.bg} ${step.color} border ${step.border}`}>
+                {step.number}
               </div>
-            </div>
-            <h3 className="text-lg font-medium text-center mb-2">Upload</h3>
-            <p className="text-gray-500 text-center text-sm">
-              Upload your files or drag and drop them
-            </p>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <div className="flex justify-center mb-4">
-              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 relative">
-                <FileText className="h-6 w-6" />
-                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-medium">
-                  2
-                </div>
+
+              {/* Icon */}
+              <div className={`w-11 h-11 rounded-xl ${step.bg} border ${step.border} ${step.glow} flex items-center justify-center ${step.color} mb-5 mt-2`}>
+                {step.icon}
               </div>
+
+              <h3 className="text-base font-semibold text-white/90 mb-2">{step.title}</h3>
+              <p className="text-sm text-white/40 leading-relaxed">{step.description}</p>
             </div>
-            <h3 className="text-lg font-medium text-center mb-2">Convert</h3>
-            <p className="text-gray-500 text-center text-sm">
-              Choose your preferred conversion options
-            </p>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <div className="flex justify-center mb-4">
-              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 relative">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-medium">
-                  3
-                </div>
-              </div>
-            </div>
-            <h3 className="text-lg font-medium text-center mb-2">Download</h3>
-            <p className="text-gray-500 text-center text-sm">
-              Download your converted files instantly
-            </p>
-          </div>
+          ))}
         </div>
       </div>
     </section>

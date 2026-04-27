@@ -1,46 +1,111 @@
 import React from 'react';
+import Link from 'next/link';
+import { FileText } from 'lucide-react';
+
+const toolGroups = [
+  {
+    heading: 'Convert',
+    links: [
+      { href: '/image-to-pdf',  label: 'Image to PDF' },
+      { href: '/pdf-to-image',  label: 'PDF to Image' },
+      { href: '/extract-text',  label: 'Extract Text' },
+    ],
+  },
+  {
+    heading: 'Organise',
+    links: [
+      { href: '/merge-pdf',     label: 'Merge PDF' },
+      { href: '/pdf-split',     label: 'Split PDF' },
+      { href: '/reorder-pages', label: 'Reorder Pages' },
+      { href: '/remove-pages',  label: 'Remove Pages' },
+    ],
+  },
+  {
+    heading: 'Edit',
+    links: [
+      { href: '/rotate-pdf',    label: 'Rotate PDF' },
+      { href: '/watermark-pdf', label: 'Watermark PDF' },
+      { href: '/page-numbers',  label: 'Page Numbers' },
+      { href: '/crop-pages',    label: 'Crop Pages' },
+      { href: '/header-footer', label: 'Header / Footer' },
+    ],
+  },
+  {
+    heading: 'Optimise',
+    links: [
+      { href: '/compress-pdf',  label: 'Compress PDF' },
+      { href: '/flatten-pdf',   label: 'Flatten Forms' },
+      { href: '/edit-metadata', label: 'Edit Metadata' },
+    ],
+  },
+];
+
+const company = [
+  { href: '#', label: 'Privacy Policy' },
+  { href: '#', label: 'Terms of Service' },
+  { href: '#', label: 'Contact' },
+  { href: '#', label: 'FAQ' },
+];
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 py-10">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between">
-          <div className="mb-6 md:mb-0">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              DocSewa
-            </h3>
-            <p className="mt-2 text-gray-600 max-w-md">
-              Your all-in-one document conversion and manipulation tool. Convert, merge, and extract with ease.
+    <footer className="relative border-t border-white/[0.06]">
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-2 md:grid-cols-7 gap-10 mb-12">
+
+          {/* Brand — spans 2 cols on md */}
+          <div className="col-span-2">
+            <Link href="/" className="flex items-center gap-2.5 mb-5">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+                <FileText className="h-4 w-4 text-white" />
+              </div>
+              <span className="text-base font-semibold accent-gradient-text">DocSewa</span>
+            </Link>
+            <p className="text-sm text-white/35 leading-relaxed max-w-xs">
+              15 professional PDF tools built for speed and privacy. Conversions run locally — your files never touch our servers.
             </p>
           </div>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 uppercase mb-2">Tools</h4>
-              <ul className="text-gray-600">
-                <li className="mb-2"><a href="/image-to-pdf" className="hover:text-blue-600">Image to PDF</a></li>
-                <li className="mb-2"><a href="/pdf-to-image" className="hover:text-blue-600">PDF to Image</a></li>
-                <li className="mb-2"><a href="/merge-pdf" className="hover:text-blue-600">Merge PDF</a></li>
-                <li className="mb-2"><a href="/extract-text" className="hover:text-blue-600">Extract Text</a></li>
+
+          {/* Tool groups */}
+          {toolGroups.map((group) => (
+            <div key={group.heading}>
+              <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-white/30 mb-5">
+                {group.heading}
+              </h4>
+              <ul className="space-y-3">
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-sm text-white/40 hover:text-white/80 transition-colors">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
-            
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 uppercase mb-2">Help</h4>
-              <ul className="text-gray-600">
-                <li className="mb-2"><a href="#" className="hover:text-blue-600">FAQ</a></li>
-                <li className="mb-2"><a href="#" className="hover:text-blue-600">Contact Us</a></li>
-                <li className="mb-2"><a href="#" className="hover:text-blue-600">Privacy</a></li>
-                <li className="mb-2"><a href="#" className="hover:text-blue-600">Terms</a></li>
-              </ul>
-            </div>
+          ))}
+
+          {/* Company */}
+          <div>
+            <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-white/30 mb-5">
+              Company
+            </h4>
+            <ul className="space-y-3">
+              {company.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="text-sm text-white/40 hover:text-white/80 transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-        
-        <div className="border-t border-gray-200 pt-6 mt-6 text-center">
-          <p className="text-gray-600 text-sm">
-            © {new Date().getFullYear()} DocSewa. All rights reserved.
-          </p>
+
+        <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-white/25">© {new Date().getFullYear()} DocSewa. All rights reserved.</p>
+          <p className="text-xs text-white/20">Built for speed · Designed for privacy</p>
         </div>
       </div>
     </footer>

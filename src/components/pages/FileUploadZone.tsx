@@ -1,5 +1,6 @@
-import React from 'react';
-import { Upload } from 'lucide-react';
+"use client"
+import React, { useState } from 'react';
+import { Upload, Sparkles } from 'lucide-react';
 
 interface FileUploadZoneProps {
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -7,44 +8,96 @@ interface FileUploadZoneProps {
   onDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
   multiple?: boolean;
   acceptedFileTypes?: string;
+  label?: string;
+  sublabel?: string;
 }
 
-const FileUploadZone: React.FC<FileUploadZoneProps> = ({ 
-  onFileChange, 
-  onDrop, 
+const FileUploadZone: React.FC<FileUploadZoneProps> = ({
+  onFileChange,
+  onDrop,
   onDragOver,
   multiple = false,
-  acceptedFileTypes = ".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+  acceptedFileTypes = '.pdf,.jpg,.jpeg,.png,.webp,.bmp',
+  label,
+  sublabel,
 }) => {
+  const [isDragActive, setIsDragActive] = useState(false);
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragActive(true);
+  };
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) setIsDragActive(false);
+  };
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    setIsDragActive(false);
+    onDrop(e);
+  };
+
   return (
-    <div 
+    <div
       className="w-full max-w-2xl mx-auto mb-8"
-      onDrop={onDrop}
+      onDrop={handleDrop}
       onDragOver={onDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
     >
-      <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 flex flex-col items-center justify-center bg-white hover:border-blue-400 transition-all duration-300">
-        <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-5">
-          <Upload className="h-8 w-8 text-blue-500" />
-        </div>
-        <h3 className="text-xl font-medium text-gray-800 mb-2">Upload your files</h3>
-        <p className="text-gray-500 text-center mb-5">
-          Drag and drop your files here, or click to browse
-          <br />
-          <span className="text-sm">{multiple ? "You can select multiple files (PDF, Images, Documents)" : "(PDF, Images, Documents)"}</span>
-        </p>
-        <label className="cursor-pointer">
-          <input
-            type="file"
-            onChange={onFileChange}
-            className="hidden"
-            accept={acceptedFileTypes}
-            multiple={multiple}
-          />
-          <div className="py-2.5 px-5 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center">
-            Browse Files
+      <label className="cursor-pointer block">
+        <input
+          type="file"
+          onChange={onFileChange}
+          className="hidden"
+          accept={acceptedFileTypes}
+          multiple={multiple}
+        />
+        <div
+          className={`
+            relative border-2 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center
+            transition-all duration-300 select-none overflow-hidden
+            ${isDragActive
+              ? 'border-indigo-500/70 bg-indigo-500/[0.06] shadow-[0_0_40px_rgba(94,106,210,0.15)]'
+              : 'border-white/[0.08] bg-white/[0.02] hover:border-indigo-500/40 hover:bg-white/[0.04] hover:shadow-[0_0_30px_rgba(94,106,210,0.08)]'
+            }
+          `}
+        >
+          {/* Background glow when dragging */}
+          {isDragActive && (
+            <div className="absolute inset-0 bg-indigo-500/5 backdrop-blur-sm pointer-events-none" />
+          )}
+
+          {/* Icon */}
+          <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 ${
+            isDragActive
+              ? 'bg-indigo-500/20 shadow-[0_0_24px_rgba(94,106,210,0.3)]'
+              : 'bg-white/[0.04]'
+          }`}>
+            {isDragActive ? (
+              <Sparkles className="h-7 w-7 text-indigo-400" />
+            ) : (
+              <Upload className="h-7 w-7 text-white/30" />
+            )}
           </div>
-        </label>
-      </div>
+
+          <h3 className={`text-xl font-semibold mb-2 transition-colors ${isDragActive ? 'text-indigo-300' : 'text-white/70'}`}>
+            {isDragActive ? 'Drop your files here' : (label || 'Upload your files')}
+          </h3>
+
+          <p className="text-sm text-white/35 text-center mb-7 max-w-xs leading-relaxed">
+            {sublabel || (
+              <>Drag & drop here, or click to browse<br />
+                <span className="text-white/20 text-xs">PDF, JPG, PNG, WebP supported</span>
+              </>
+            )}
+          </p>
+
+          <div className="relative flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-semibold shadow-[0_4px_16px_rgba(94,106,210,0.4)] transition-all duration-200 hover:shadow-[0_4px_24px_rgba(94,106,210,0.55)]">
+            <Upload className="h-4 w-4" />
+            Choose Files
+          </div>
+        </div>
+      </label>
     </div>
   );
 };

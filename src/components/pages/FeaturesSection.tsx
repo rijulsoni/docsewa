@@ -1,62 +1,155 @@
 import React from 'react';
 import FeatureCard from './FeatureCard';
+import {
+  FileImage, FileText, Files, Scissors, FileDown,
+  RotateCw, Stamp, Trash2, Hash, ArrowUpDown,
+  Minimize2, Layers, Crop, PanelTop, Tag,
+} from 'lucide-react';
+
+const tools = [
+  {
+    title: 'Image to PDF',
+    description: 'Convert JPG, PNG and WebP images into a polished, print-ready PDF.',
+    icon: <FileImage className="h-5 w-5" />,
+    path: '/image-to-pdf',
+    iconBg: 'from-blue-500 to-blue-600',
+    badge: 'Popular',
+  },
+  {
+    title: 'Merge PDF',
+    description: 'Combine multiple PDFs into one. Drag to reorder pages before merging.',
+    icon: <Files className="h-5 w-5" />,
+    path: '/merge-pdf',
+    iconBg: 'from-emerald-500 to-teal-600',
+  },
+  {
+    title: 'Split PDF',
+    description: 'Extract individual pages or a custom range into a new PDF.',
+    icon: <Scissors className="h-5 w-5" />,
+    path: '/pdf-split',
+    iconBg: 'from-rose-500 to-pink-600',
+  },
+  {
+    title: 'PDF to Image',
+    description: 'Render any PDF page as a high-resolution PNG or JPG in your browser.',
+    icon: <FileDown className="h-5 w-5" />,
+    path: '/pdf-to-image',
+    iconBg: 'from-violet-500 to-purple-600',
+  },
+  {
+    title: 'Extract Text',
+    description: 'Pull all readable text from any PDF. Copy or download as .txt.',
+    icon: <FileText className="h-5 w-5" />,
+    path: '/extract-text',
+    iconBg: 'from-orange-500 to-amber-600',
+    badge: 'Fast',
+  },
+  {
+    title: 'Rotate PDF',
+    description: 'Rotate all or specific pages by 90°, 180°, or 270° in one click.',
+    icon: <RotateCw className="h-5 w-5" />,
+    path: '/rotate-pdf',
+    iconBg: 'from-yellow-500 to-yellow-600',
+  },
+  {
+    title: 'Watermark PDF',
+    description: 'Stamp custom text diagonally across every page with adjustable opacity.',
+    icon: <Stamp className="h-5 w-5" />,
+    path: '/watermark-pdf',
+    iconBg: 'from-purple-500 to-fuchsia-600',
+  },
+  {
+    title: 'Remove Pages',
+    description: 'Delete one or more pages from a PDF by entering their page numbers.',
+    icon: <Trash2 className="h-5 w-5" />,
+    path: '/remove-pages',
+    iconBg: 'from-red-500 to-red-600',
+  },
+  {
+    title: 'Page Numbers',
+    description: 'Stamp page numbers at any position with custom format and font size.',
+    icon: <Hash className="h-5 w-5" />,
+    path: '/page-numbers',
+    iconBg: 'from-teal-500 to-cyan-600',
+  },
+  {
+    title: 'Reorder Pages',
+    description: 'Drag thumbnail previews into a new order, then download the rebuilt PDF.',
+    icon: <ArrowUpDown className="h-5 w-5" />,
+    path: '/reorder-pages',
+    iconBg: 'from-indigo-500 to-indigo-600',
+  },
+  {
+    title: 'Compress PDF',
+    description: 'Shrink file size by removing dead objects and compressing internal streams.',
+    icon: <Minimize2 className="h-5 w-5" />,
+    path: '/compress-pdf',
+    iconBg: 'from-sky-500 to-sky-600',
+    badge: 'New',
+  },
+  {
+    title: 'Flatten Forms',
+    description: 'Bake interactive form fields into static content — locks answers permanently.',
+    icon: <Layers className="h-5 w-5" />,
+    path: '/flatten-pdf',
+    iconBg: 'from-amber-500 to-orange-600',
+    badge: 'New',
+  },
+  {
+    title: 'Crop Pages',
+    description: 'Trim margins from PDF pages by specifying points to remove from each edge.',
+    icon: <Crop className="h-5 w-5" />,
+    path: '/crop-pages',
+    iconBg: 'from-lime-500 to-green-600',
+    badge: 'New',
+  },
+  {
+    title: 'Header / Footer',
+    description: 'Stamp custom text at the top or bottom of every page with alignment options.',
+    icon: <PanelTop className="h-5 w-5" />,
+    path: '/header-footer',
+    iconBg: 'from-fuchsia-500 to-pink-600',
+    badge: 'New',
+  },
+  {
+    title: 'Edit Metadata',
+    description: 'Update the title, author, subject and keywords stored in your PDF properties.',
+    icon: <Tag className="h-5 w-5" />,
+    path: '/edit-metadata',
+    iconBg: 'from-cyan-500 to-teal-600',
+    badge: 'New',
+  },
+];
 
 const FeaturesSection: React.FC = () => {
   return (
-    <section id="features" className="py-16 bg-white">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-gray-800">Document Tools</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Everything you need to manage your documents in one place
+    <section id="features" className="py-24 relative">
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400 mb-4">Tools</p>
+          <h2 className="text-3xl md:text-5xl font-extrabold gradient-text leading-tight mb-4">
+            Everything for your PDFs
+          </h2>
+          <p className="text-white/40 max-w-md mx-auto text-base">
+            15 essential tools — all free, all private
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <FeatureCard 
-            title="Image to PDF"
-            description="Convert your images to PDF documents in seconds"
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            }
-            path="/image-to-pdf"
-            gradient=""
-          />
-          <FeatureCard 
-            title="PDF to Image"
-            description="Extract pages from PDF as high-quality images"
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            }
-            path="/pdf-to-image"
-            gradient=""
-          />
-          <FeatureCard 
-            title="Merge PDF"
-            description="Combine multiple PDF files into a single document"
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-              </svg>
-            }
-            path="/merge-pdf"
-            gradient=""
-          />
-          <FeatureCard 
-            title="Extract Text"
-            description="Extract text from images using OCR technology"
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            }
-            path="/extract-text"
-            gradient=""
-          />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-w-6xl mx-auto">
+          {tools.map((tool) => (
+            <FeatureCard
+              key={tool.path}
+              title={tool.title}
+              description={tool.description}
+              icon={tool.icon}
+              path={tool.path}
+              gradient=""
+              iconBg={tool.iconBg}
+              badge={tool.badge}
+            />
+          ))}
         </div>
       </div>
     </section>
