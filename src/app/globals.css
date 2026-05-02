@@ -81,6 +81,18 @@ html, body {
   backdrop-filter: blur(12px);
 }
 
+/* ─── Clerk auth modal sizing ─────────────────────────────── */
+.cl-modalContent,
+.cl-rootBox,
+.cl-cardBox {
+  width: min(92vw, 30rem) !important;
+  max-width: 30rem !important;
+}
+
+.cl-card {
+  width: 100% !important;
+}
+
 /* ─── Noise overlay (subtle texture) ─────────────────────── */
 .noise-bg::after {
   content: '';

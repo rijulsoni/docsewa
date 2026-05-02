@@ -77,7 +77,7 @@ const Footer = () => {
               <span className="text-base font-semibold accent-gradient-text">DocSewa</span>
             </Link>
             <p className="text-sm text-white/35 leading-relaxed max-w-xs">
-              23 professional document tools built for speed and privacy. Conversions run locally — your files never touch our servers.
+              94 professional tools for PDF, Word, Image, Excel & more. Everything runs locally — your files never touch our servers.
             </p>
           </div>
 

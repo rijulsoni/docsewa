@@ -13,6 +13,7 @@ import FileRearrangement from './FileRearrangement';
 import ConversionOptions from './ConversionOptions';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import Link from 'next/link';
+import ScrollToTop from './ScrollToTop';
 
 const Home = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -62,7 +63,7 @@ const Home = () => {
         <HowItWorks />
 
         {/* CTA */}
-        <section className="py-24 relative overflow-hidden">
+        <section className="py-12 sm:py-24 relative overflow-hidden">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-transparent to-violet-900/20 pointer-events-none" />
 
@@ -76,7 +77,7 @@ const Home = () => {
             <p className="text-white/40 max-w-md mx-auto text-base mb-10">
               Upload any file above or jump directly to a tool — it&apos;s completely free.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <label className="cursor-pointer">
                 <input
                   type="file"
@@ -86,13 +87,13 @@ const Home = () => {
                   accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.svg,.bmp,.docx,.xlsx,.xls,.csv"
                   multiple
                 />
-                <span className="inline-flex items-center gap-2 px-7 py-3 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold rounded-xl transition-all shadow-[0_4px_20px_rgba(94,106,210,0.4)] hover:shadow-[0_4px_30px_rgba(94,106,210,0.6)] text-sm">
-                  Upload & Convert
+                <span className="inline-flex items-center justify-center gap-2 px-7 py-3 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold rounded-xl transition-all shadow-[0_4px_20px_rgba(94,106,210,0.4)] hover:shadow-[0_4px_30px_rgba(94,106,210,0.6)] text-sm min-w-[160px]">
+                  Upload &amp; Convert
                 </span>
               </label>
               <Link
                 href="#features"
-                className="inline-flex items-center gap-2 px-7 py-3 bg-white/[0.06] hover:bg-white/[0.10] border border-white/[0.08] text-white/70 hover:text-white font-semibold rounded-xl transition-all text-sm"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold border border-white/[0.18] text-white/65 hover:text-white hover:border-white/30 hover:bg-white/[0.06] transition-all min-w-[160px]"
               >
                 Browse Tools
               </Link>
@@ -184,6 +185,7 @@ const Home = () => {
         </Dialog>
       )}
 
+      <ScrollToTop />
       <Footer />
     </div>
   );

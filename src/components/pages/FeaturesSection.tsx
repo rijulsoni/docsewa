@@ -15,7 +15,7 @@ import {
   Link as LinkIcon, CaseSensitive, Pipette, Binary, Clock,
   KeyRound, Shuffle, Paintbrush, Square, Code2, Percent,
   Ruler, Activity, Globe, TrendingUp, Calendar, CalendarDays,
-  Briefcase, Landmark, Filter, Replace, Type,
+  Briefcase, Landmark, Filter, Replace, Type, Sparkles, Languages,
 } from 'lucide-react';
 
 const pdfTools = [
@@ -37,6 +37,8 @@ const pdfTools = [
   { title: 'PDF Protect', description: 'Encrypt your PDF with a password and restrict printing, copying and editing.', icon: <Lock className="h-5 w-5" />, path: '/pdf-protect', iconBg: 'from-red-500 to-rose-600' },
   { title: 'PDF Sign', description: 'Draw your signature and embed it on any page of your PDF document.', icon: <PenLine className="h-5 w-5" />, path: '/pdf-sign', iconBg: 'from-indigo-500 to-violet-600' },
   { title: 'PDF Unlock', description: 'Remove the password from an encrypted PDF — enter the password once and download unlocked.', icon: <LockOpen className="h-5 w-5" />, path: '/pdf-unlock', iconBg: 'from-emerald-500 to-green-600' },
+  { title: 'Chat with PDF', description: 'Upload any PDF and chat with it — get an instant AI summary and ask questions about the content.', icon: <Sparkles className="h-5 w-5" />, path: '/chat-with-pdf', iconBg: 'from-violet-500 to-purple-600', badge: 'AI' },
+  { title: 'Document Translator', description: 'Translate PDF, DOCX, or TXT documents into 20+ languages. Free, no sign-up needed.', icon: <Languages className="h-5 w-5" />, path: '/document-translator', iconBg: 'from-sky-500 to-cyan-600' },
 ];
 
 const wordTools = [
@@ -68,6 +70,7 @@ const imageTools = [
   { title: 'Color Picker', description: 'Upload an image, hover to preview colors, and click any pixel to copy HEX/RGB.', icon: <Pipette className="h-5 w-5" />, path: '/image-color-picker', iconBg: 'from-rose-500 to-pink-600' },
   { title: 'Favicon Generator', description: 'Generate favicon PNG files at all standard sizes (16–512px) from any image.', icon: <Globe className="h-5 w-5" />, path: '/favicon-generator', iconBg: 'from-orange-500 to-amber-600' },
   { title: 'Image to Base64', description: 'Convert any image to a Base64 data URL — copy or download for use in CSS/HTML.', icon: <Binary className="h-5 w-5" />, path: '/image-to-base64', iconBg: 'from-indigo-500 to-violet-600' },
+  { title: 'OCR Scanner', description: 'Extract searchable, editable text from scanned images and photos. Supports 40+ languages, runs in-browser.', icon: <ScanText className="h-5 w-5" />, path: '/ocr-scanner', iconBg: 'from-teal-500 to-cyan-600', badge: 'Free' },
 ];
 
 const excelTools = [
@@ -190,10 +193,10 @@ const Divider: React.FC<{ label: string }> = ({ label }) => (
 type TabKey = 'all' | 'pdf' | 'word' | 'image' | 'excel' | 'text' | 'dev' | 'finance' | 'date' | 'css' | 'calc';
 
 const TABS: { key: TabKey; label: string; count: number; dot: string; active: string }[] = [
-  { key: 'all',     label: 'All',      count: 94, dot: 'bg-white/40',    active: 'bg-white/[0.08] text-white border-white/20' },
-  { key: 'pdf',     label: 'PDF',      count: 18, dot: 'bg-indigo-500',  active: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30' },
+  { key: 'all',     label: 'All',      count: 97, dot: 'bg-white/40',    active: 'bg-white/[0.08] text-white border-white/20' },
+  { key: 'pdf',     label: 'PDF',      count: 20, dot: 'bg-indigo-500',  active: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30' },
   { key: 'word',    label: 'Word',     count: 11, dot: 'bg-blue-400',    active: 'bg-blue-500/10 text-blue-300 border-blue-500/30' },
-  { key: 'image',   label: 'Image',    count: 14, dot: 'bg-pink-500',    active: 'bg-pink-500/10 text-pink-300 border-pink-500/30' },
+  { key: 'image',   label: 'Image',    count: 15, dot: 'bg-pink-500',    active: 'bg-pink-500/10 text-pink-300 border-pink-500/30' },
   { key: 'excel',   label: 'Excel',    count: 7,  dot: 'bg-green-500',   active: 'bg-green-500/10 text-green-300 border-green-500/30' },
   { key: 'text',    label: 'Text',     count: 14, dot: 'bg-yellow-400',  active: 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30' },
   { key: 'dev',     label: 'Dev',      count: 15, dot: 'bg-violet-500',  active: 'bg-violet-500/10 text-violet-300 border-violet-500/30' },
@@ -221,7 +224,7 @@ const FeaturesSection: React.FC = () => {
             Everything for your documents
           </h2>
           <p className="text-white/40 max-w-md mx-auto text-base">
-            94 professional tools — PDF, Word, Excel, Image, Text, Dev, Finance &amp; more, all free, all private
+            97 professional tools — PDF, Word, Excel, Image, Text, Dev, AI &amp; more, all free, all private
           </p>
         </div>
 

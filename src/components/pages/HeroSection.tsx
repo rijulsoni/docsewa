@@ -44,7 +44,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </h1>
 
           <p className="text-[15px] text-white/45 max-w-lg mx-auto mb-8 leading-relaxed">
-            94 free tools for PDF, Word, Image, Text &amp; more.{' '}
+            97 free tools for PDF, Word, Image, AI &amp; more.{' '}
             <span className="text-white/65">Drop a file to instantly see every tool that works on it.</span>
           </p>
 
