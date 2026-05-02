@@ -1,0 +1,123 @@
+<h2>Navbar: How should we handle 11 categories?</h2>
+<p class="subtitle">The current nav has Home + 11 dropdown buttons and feels cramped at any viewport. Pick the approach that feels right.</p>
+
+<div class="cards">
+
+  <!-- Option A: Mega Menu -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #0d0d10; border-radius: 8px; font-family: monospace;">
+      <div style="display:flex; align-items:center; justify-content:space-between; background:#111; padding:10px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.08);">
+        <span style="color:#a78bfa; font-weight:700; font-size:14px;">● DocSewa</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span style="color:#fff; background:rgba(255,255,255,0.08); padding:4px 10px; border-radius:6px; font-size:11px;">PDF ▾</span>
+          <span style="color:#aaa; padding:4px 10px; font-size:11px;">Word ▾</span>
+          <span style="color:#aaa; padding:4px 10px; font-size:11px;">Image ▾</span>
+          <span style="color:#aaa; padding:4px 10px; font-size:11px;">Tools ▾</span>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span style="color:#aaa; font-size:11px;">🔍 Search</span>
+        </div>
+      </div>
+      <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:8px; margin-top:4px; padding:16px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+        <div>
+          <div style="color:#6366f1; font-size:10px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">PDF Tools · 18</div>
+          <div style="color:#888; font-size:11px; line-height:1.8;">Image to PDF<br>PDF to Image<br>Merge PDF<br>Split PDF<br>Compress PDF<br><span style="color:#6366f1;">+13 more</span></div>
+        </div>
+        <div>
+          <div style="color:#ec4899; font-size:10px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Image · 14</div>
+          <div style="color:#888; font-size:11px; line-height:1.8;">Format Converter<br>BG Remover<br>Batch Compress<br>Crop & Resize<br><span style="color:#ec4899;">+10 more</span></div>
+        </div>
+        <div>
+          <div style="color:#f59e0b; font-size:10px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Dev · 15</div>
+          <div style="color:#888; font-size:11px; line-height:1.8;">JSON Formatter<br>Base64<br>Hash Generator<br>JWT Decoder<br><span style="color:#f59e0b;">+11 more</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Collapsed Mega Menu</h3>
+      <p>Shrink to 4 top-level labels: <strong>PDF · Word · Image · Tools</strong> (Tools = all others). "Tools" opens a wide mega menu with all categories laid out in a grid. Search icon in nav. Clean, uncluttered.</p>
+      <div class="pros-cons" style="margin-top:8px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Nav bar fits on any screen</li><li>Mega menu shows everything at once</li><li>Industry-standard pattern</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Finance/CSS/Calc buried under "Tools"</li><li>More clicks to reach niche categories</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Search-first -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #0d0d10; border-radius: 8px; font-family: monospace;">
+      <div style="display:flex; align-items:center; justify-content:space-between; background:#111; padding:10px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.08);">
+        <span style="color:#a78bfa; font-weight:700; font-size:14px;">● DocSewa</span>
+        <div style="flex:1; max-width:380px; margin:0 24px;">
+          <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:6px 14px; display:flex; align-items:center; gap:8px;">
+            <span style="color:#555; font-size:12px;">🔍</span>
+            <span style="color:#555; font-size:12px;">Search 94 tools... &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ⌘K</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <span style="color:#aaa; padding:4px 8px; font-size:11px; border:1px solid rgba(255,255,255,0.08); border-radius:6px;">Browse</span>
+        </div>
+      </div>
+      <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:8px; margin-top:4px; padding:12px 16px; display:flex; flex-direction:column; gap:8px;">
+        <div style="color:#555; font-size:10px; text-transform:uppercase; letter-spacing:1px;">Suggested</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span style="background:rgba(99,102,241,0.15); color:#818cf8; padding:3px 10px; border-radius:20px; font-size:11px;">JSON Formatter</span>
+          <span style="background:rgba(236,72,153,0.15); color:#f472b6; padding:3px 10px; border-radius:20px; font-size:11px;">PDF Compress</span>
+          <span style="background:rgba(16,185,129,0.15); color:#34d399; padding:3px 10px; border-radius:20px; font-size:11px;">BG Remover</span>
+          <span style="background:rgba(245,158,11,0.15); color:#fbbf24; padding:3px 10px; border-radius:20px; font-size:11px;">Word Count</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Search-First Nav</h3>
+      <p>Logo left, large centered search bar (⌘K), "Browse" button right. Dropdowns gone entirely. User finds any tool by typing. Works best when users know what they want.</p>
+      <div class="pros-cons" style="margin-top:8px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Scales to 500+ tools effortlessly</li><li>Most modern UX pattern</li><li>No nav overflow at any size</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Requires building a search/command palette</li><li>Harder to discover tools you didn't know exist</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option C: Sidebar on tool pages -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #0d0d10; border-radius: 8px; font-family: monospace;">
+      <div style="display:flex; align-items:center; justify-content:space-between; background:#111; padding:10px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.08);">
+        <span style="color:#a78bfa; font-weight:700; font-size:14px;">● DocSewa</span>
+        <div style="display:flex; gap:6px;">
+          <span style="color:#aaa; padding:4px 10px; font-size:11px; background:rgba(255,255,255,0.04); border-radius:6px;">PDF ▾</span>
+          <span style="color:#aaa; padding:4px 10px; font-size:11px; background:rgba(255,255,255,0.04); border-radius:6px;">Word ▾</span>
+          <span style="color:#aaa; padding:4px 10px; font-size:11px; background:rgba(255,255,255,0.04); border-radius:6px;">Image ▾</span>
+          <span style="color:#aaa; padding:4px 10px; font-size:11px; background:rgba(255,255,255,0.04); border-radius:6px;">Text ▾</span>
+          <span style="color:#aaa; padding:4px 10px; font-size:11px; background:rgba(255,255,255,0.04); border-radius:6px;">Dev ▾</span>
+          <span style="color:#6366f1; padding:4px 10px; font-size:11px; background:rgba(99,102,241,0.12); border-radius:6px; border:1px solid rgba(99,102,241,0.3);">More ▾</span>
+        </div>
+        <span style="color:#aaa; font-size:11px;">🔍</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:4px;">
+        <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:12px; width:160px; min-height:80px;">
+          <div style="color:#555; font-size:10px; text-transform:uppercase; margin-bottom:8px;">Finance</div>
+          <div style="color:#888; font-size:11px; line-height:1.8;">Loan Calculator<br>Compound Interest<br>Tip Calculator<br>Discount Calc</div>
+        </div>
+        <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:12px; flex:1; min-height:80px;">
+          <div style="color:#555; font-size:10px; text-transform:uppercase; margin-bottom:8px;">More Tools</div>
+          <div style="display:flex; gap:16px;">
+            <div><div style="color:#7c3aed; font-size:10px; margin-bottom:4px;">Date & Time</div><div style="color:#888; font-size:10px; line-height:1.8;">Age Calculator<br>Date Difference<br>Timezone<br>Work Days</div></div>
+            <div><div style="color:#0891b2; font-size:10px; margin-bottom:4px;">CSS</div><div style="color:#888; font-size:10px; line-height:1.8;">Gradient Gen<br>Box Shadow<br>CSS Formatter</div></div>
+            <div><div style="color:#16a34a; font-size:10px; margin-bottom:4px;">Calculators</div><div style="color:#888; font-size:10px; line-height:1.8;">Percentage<br>Unit Converter<br>BMI Calc</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — 5 Primary + "More" Overflow</h3>
+      <p>Keep the 5 biggest categories (PDF · Word · Image · Text · Dev) as individual dropdowns. Finance, Date, CSS, Calc, Utility collapse into a single <strong>"More"</strong> dropdown that shows a mini multi-column layout. Search icon on the right.</p>
+      <div class="pros-cons" style="margin-top:8px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Main categories stay prominent</li><li>No new infra needed</li><li>Fits on 1280px without overflow</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Finance/CSS still one extra click away</li><li>"More" label isn't very descriptive</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:24px;">Click your preferred approach, or tell me what you like from each in the terminal.</p>

@@ -38,6 +38,19 @@ const toolGroups = [
       { href: '/edit-metadata', label: 'Edit Metadata' },
     ],
   },
+  {
+    heading: 'Word',
+    links: [
+      { href: '/docx-to-text',        label: 'DOCX to Text' },
+      { href: '/docx-to-html',        label: 'DOCX to HTML' },
+      { href: '/docx-to-pdf',         label: 'DOCX to PDF' },
+      { href: '/merge-docx',          label: 'Merge DOCX' },
+      { href: '/docx-find-replace',   label: 'Find & Replace' },
+      { href: '/docx-metadata',       label: 'DOCX Metadata' },
+      { href: '/pdf-to-docx',         label: 'PDF to DOCX' },
+      { href: '/docx-extract-images', label: 'Extract Images' },
+    ],
+  },
 ];
 
 const company = [
@@ -53,7 +66,7 @@ const Footer = () => {
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-7 gap-10 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-8 gap-10 mb-12">
 
           {/* Brand — spans 2 cols on md */}
           <div className="col-span-2">
@@ -64,7 +77,7 @@ const Footer = () => {
               <span className="text-base font-semibold accent-gradient-text">DocSewa</span>
             </Link>
             <p className="text-sm text-white/35 leading-relaxed max-w-xs">
-              15 professional PDF tools built for speed and privacy. Conversions run locally — your files never touch our servers.
+              23 professional document tools built for speed and privacy. Conversions run locally — your files never touch our servers.
             </p>
           </div>
 

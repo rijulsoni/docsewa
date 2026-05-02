@@ -17,7 +17,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
   onDrop,
   onDragOver,
   multiple = false,
-  acceptedFileTypes = '.pdf,.jpg,.jpeg,.png,.webp,.bmp',
+  acceptedFileTypes = '.pdf,.jpg,.jpeg,.png,.webp,.bmp,.heic,.svg,.docx,.doc,.xlsx,.xls,.csv',
   label,
   sublabel,
 }) => {
@@ -48,13 +48,14 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
         <input
           type="file"
           onChange={onFileChange}
+          onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
           className="hidden"
           accept={acceptedFileTypes}
           multiple={multiple}
         />
         <div
           className={`
-            relative border-2 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center
+            relative border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center
             transition-all duration-300 select-none overflow-hidden
             ${isDragActive
               ? 'border-indigo-500/70 bg-indigo-500/[0.06] shadow-[0_0_40px_rgba(94,106,210,0.15)]'
@@ -68,7 +69,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
           )}
 
           {/* Icon */}
-          <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 ${
+          <div className={`relative w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 ${
             isDragActive
               ? 'bg-indigo-500/20 shadow-[0_0_24px_rgba(94,106,210,0.3)]'
               : 'bg-white/[0.04]'
@@ -84,10 +85,10 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
             {isDragActive ? 'Drop your files here' : (label || 'Upload your files')}
           </h3>
 
-          <p className="text-sm text-white/35 text-center mb-7 max-w-xs leading-relaxed">
+          <p className="text-sm text-white/35 text-center mb-4 max-w-xs leading-relaxed">
             {sublabel || (
               <>Drag & drop here, or click to browse<br />
-                <span className="text-white/20 text-xs">PDF, JPG, PNG, WebP supported</span>
+                <span className="text-white/20 text-xs">PDF, Image, DOCX, XLSX, CSV — any file</span>
               </>
             )}
           </p>

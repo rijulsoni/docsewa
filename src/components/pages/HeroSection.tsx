@@ -16,7 +16,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   multiple = false,
 }) => {
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden">
+    <section className="relative py-8 md:py-10 overflow-hidden">
       {/* Animated gradient blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
         <div className="animate-blob animation-delay-0 absolute top-1/4 -left-32 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl" />
@@ -35,23 +35,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       />
 
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center mb-12">
+        <div className="max-w-3xl mx-auto text-center mb-4">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.1] bg-white/[0.04] text-xs text-white/60 mb-8 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.1] bg-white/[0.04] text-xs text-white/60 mb-4 backdrop-blur-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
             Free · No sign-up · No data stored
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.08] tracking-tight mb-6">
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-[1.08] tracking-tight mb-3">
             <span className="gradient-text">Transform your</span>
             <br />
             <span className="accent-gradient-text">PDFs instantly</span>
           </h1>
 
-          <p className="text-lg text-white/50 max-w-xl mx-auto mb-12 leading-relaxed">
-            Merge, split, convert and extract — professional PDF tools that run{' '}
-            <span className="text-white/70">securely in your browser</span>. No uploads needed.
+          <p className="text-base text-white/50 max-w-xl mx-auto mb-5 leading-relaxed">
+            36 tools for PDF, Word, Excel &amp; images — drop any file and instantly see{' '}
+            <span className="text-white/70">every tool that works on it</span>.
           </p>
 
           {/* Upload zone */}

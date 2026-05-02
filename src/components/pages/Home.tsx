@@ -82,7 +82,8 @@ const Home = () => {
                   type="file"
                   className="hidden"
                   onChange={handleFileChange}
-                  accept=".pdf,.jpg,.jpeg,.png,.webp"
+                  onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
+                  accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.svg,.bmp,.docx,.xlsx,.xls,.csv"
                   multiple
                 />
                 <span className="inline-flex items-center gap-2 px-7 py-3 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold rounded-xl transition-all shadow-[0_4px_20px_rgba(94,106,210,0.4)] hover:shadow-[0_4px_30px_rgba(94,106,210,0.6)] text-sm">
@@ -109,7 +110,7 @@ const Home = () => {
         </Drawer>
       ) : (
         <Dialog open={isOptionsModalOpen} onOpenChange={setIsOptionsModalOpen}>
-          <DialogContent className="sm:max-w-[560px] p-0 border-0 bg-transparent shadow-2xl">
+          <DialogContent className="sm:max-w-[560px] p-0 border-0 bg-transparent shadow-2xl [&>button:last-child]:hidden">
             <VisuallyHidden><DialogTitle>Choose conversion type</DialogTitle></VisuallyHidden>
             <ConversionOptions files={files} onClose={handleCloseOptions} />
           </DialogContent>
