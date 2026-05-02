@@ -78,20 +78,19 @@ export default function StringEscapePage() {
   return (
     <ToolPageLayout
       title="String Escape / Unescape"
-      description="Escape and unescape strings for JavaScript or Python. Handles \\n, \\t, \\\" and Unicode escape sequences."
+      description="Escape and unescape strings for JavaScript or Python. Handles newlines, tabs, quotes, and Unicode escape sequences."
       icon={<Code className="h-7 w-7" />}
       accentColor="rgba(20,184,166,0.35)"
       features={[
         'Escape strings for JavaScript or Python',
         'Unescape escaped string literals',
-        'Handles \\n, \\t, \\", \\\\ and Unicode escapes',
+        'Handles newlines, tabs, quotes and Unicode escapes',
         'Copy result to clipboard',
         'Prevents copy-paste string bugs',
         'Runs entirely in your browser',
       ]}
     >
       <div className="space-y-4">
-        {/* Input */}
         <div className="glass-card rounded-2xl p-5 space-y-2">
           <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Input</p>
           <textarea
@@ -103,7 +102,6 @@ export default function StringEscapePage() {
           />
         </div>
 
-        {/* Mode buttons */}
         <div className="glass-card rounded-2xl p-5 space-y-3">
           <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Mode</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -125,7 +123,6 @@ export default function StringEscapePage() {
           {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
         </div>
 
-        {/* Output */}
         <div className="glass-card rounded-2xl p-5 space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Output</p>

@@ -1,4 +1,5 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import FeatureCard from './FeatureCard';
 import {
   FileImage, FileText, Files, Scissors, FileDown,
@@ -186,13 +187,35 @@ const Divider: React.FC<{ label: string }> = ({ label }) => (
   </div>
 );
 
+type TabKey = 'all' | 'pdf' | 'word' | 'image' | 'excel' | 'text' | 'dev' | 'finance' | 'date' | 'css' | 'calc';
+
+const TABS: { key: TabKey; label: string; count: number; dot: string; active: string }[] = [
+  { key: 'all',     label: 'All',      count: 94, dot: 'bg-white/40',    active: 'bg-white/[0.08] text-white border-white/20' },
+  { key: 'pdf',     label: 'PDF',      count: 18, dot: 'bg-indigo-500',  active: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30' },
+  { key: 'word',    label: 'Word',     count: 11, dot: 'bg-blue-400',    active: 'bg-blue-500/10 text-blue-300 border-blue-500/30' },
+  { key: 'image',   label: 'Image',    count: 14, dot: 'bg-pink-500',    active: 'bg-pink-500/10 text-pink-300 border-pink-500/30' },
+  { key: 'excel',   label: 'Excel',    count: 7,  dot: 'bg-green-500',   active: 'bg-green-500/10 text-green-300 border-green-500/30' },
+  { key: 'text',    label: 'Text',     count: 14, dot: 'bg-yellow-400',  active: 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30' },
+  { key: 'dev',     label: 'Dev',      count: 15, dot: 'bg-violet-500',  active: 'bg-violet-500/10 text-violet-300 border-violet-500/30' },
+  { key: 'finance', label: 'Finance',  count: 4,  dot: 'bg-red-500',     active: 'bg-red-500/10 text-red-300 border-red-500/30' },
+  { key: 'date',    label: 'Date',     count: 4,  dot: 'bg-sky-500',     active: 'bg-sky-500/10 text-sky-300 border-sky-500/30' },
+  { key: 'css',     label: 'CSS',      count: 3,  dot: 'bg-purple-500',  active: 'bg-purple-500/10 text-purple-300 border-purple-500/30' },
+  { key: 'calc',    label: 'Calc',     count: 3,  dot: 'bg-emerald-500', active: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' },
+];
+
+const utilityTools = [{ title: 'QR Generator', description: 'Generate a QR code from any URL or text. Customize colors and download PNG or SVG.', icon: <QrCode className="h-5 w-5" />, path: '/qr-generator', iconBg: 'from-yellow-500 to-amber-500' }];
+
 const FeaturesSection: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<TabKey>('all');
+
+  const show = (key: TabKey) => activeTab === 'all' || activeTab === key;
+
   return (
     <section id="features" className="py-10 relative">
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400 mb-4">Tools</p>
           <h2 className="text-3xl md:text-5xl font-extrabold gradient-text leading-tight mb-4">
             Everything for your documents
@@ -202,28 +225,85 @@ const FeaturesSection: React.FC = () => {
           </p>
         </div>
 
+        {/* Filter tabs */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {TABS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                activeTab === tab.key
+                  ? tab.active
+                  : 'border-white/[0.08] text-white/40 hover:text-white/70 hover:border-white/20 hover:bg-white/[0.03]'
+              }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${tab.dot}`} />
+              {tab.label}
+              <span className={`text-[10px] ${activeTab === tab.key ? 'opacity-70' : 'opacity-40'}`}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </div>
+
         <div className="space-y-16 max-w-7xl mx-auto">
-          <ToolGroup label="PDF Tools" sublabel="Convert, organise, edit and optimise any PDF file" accentClass="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" dotClass="bg-indigo-500" tools={pdfTools} />
-          <Divider label="Word / DOCX" />
-          <ToolGroup label="Word / DOCX Tools" sublabel="Extract, convert, merge and edit Microsoft Word documents" accentClass="bg-blue-500/10 text-blue-400 border border-blue-500/20" dotClass="bg-blue-500" tools={wordTools} />
-          <Divider label="Image" />
-          <ToolGroup label="Image Tools" sublabel="Convert formats, remove backgrounds, compress, upscale, crop and create GIFs" accentClass="bg-pink-500/10 text-pink-400 border border-pink-500/20" dotClass="bg-pink-500" tools={imageTools} />
-          <Divider label="Excel / CSV" />
-          <ToolGroup label="Excel / CSV Tools" sublabel="Convert, export, merge and diff spreadsheet files in seconds" accentClass="bg-green-500/10 text-green-400 border border-green-500/20" dotClass="bg-green-500" tools={excelTools} />
-          <Divider label="Text Tools" />
-          <ToolGroup label="Text Tools" sublabel="Transform, compare and convert plain text — no file upload needed" accentClass="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" dotClass="bg-yellow-500" tools={textTools} />
-          <Divider label="Developer Utilities" />
-          <ToolGroup label="Developer Utilities" sublabel="JSON, Base64, hashing, JWT, regex and more — all in your browser" accentClass="bg-violet-500/10 text-violet-400 border border-violet-500/20" dotClass="bg-violet-500" tools={devTools} />
-          <Divider label="Finance" />
-          <ToolGroup label="Finance" sublabel="Loan, compound interest, tip and discount calculators" accentClass="bg-red-500/10 text-red-400 border border-red-500/20" dotClass="bg-red-500" tools={financeTools} />
-          <Divider label="Date & Time" />
-          <ToolGroup label="Date & Time" sublabel="Age, differences, timezones and working days" accentClass="bg-sky-500/10 text-sky-400 border border-sky-500/20" dotClass="bg-sky-500" tools={dateTools} />
-          <Divider label="CSS Tools" />
-          <ToolGroup label="CSS Tools" sublabel="Visual CSS builders and formatters — copy ready-to-use code" accentClass="bg-purple-500/10 text-purple-400 border border-purple-500/20" dotClass="bg-purple-500" tools={cssTools} />
-          <Divider label="Calculators" />
-          <ToolGroup label="Calculators" sublabel="Quick math and unit calculations in your browser" accentClass="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" dotClass="bg-emerald-500" tools={calcTools} />
-          <Divider label="Utilities" />
-          <ToolGroup label="Utility Tools" sublabel="Handy generators for everyday tasks" accentClass="bg-amber-500/10 text-amber-400 border border-amber-500/20" dotClass="bg-amber-500" tools={[{ title: 'QR Generator', description: 'Generate a QR code from any URL or text. Customize colors and download PNG or SVG.', icon: <QrCode className="h-5 w-5" />, path: '/qr-generator', iconBg: 'from-yellow-500 to-amber-500' }]} />
+          {show('pdf') && (
+            <ToolGroup label="PDF Tools" sublabel="Convert, organise, edit and optimise any PDF file" accentClass="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" dotClass="bg-indigo-500" tools={pdfTools} />
+          )}
+          {show('word') && (
+            <>
+              {show('pdf') && <Divider label="Word / DOCX" />}
+              <ToolGroup label="Word / DOCX Tools" sublabel="Extract, convert, merge and edit Microsoft Word documents" accentClass="bg-blue-500/10 text-blue-400 border border-blue-500/20" dotClass="bg-blue-500" tools={wordTools} />
+            </>
+          )}
+          {show('image') && (
+            <>
+              {(show('pdf') || show('word')) && activeTab === 'all' && <Divider label="Image" />}
+              <ToolGroup label="Image Tools" sublabel="Convert formats, remove backgrounds, compress, upscale, crop and create GIFs" accentClass="bg-pink-500/10 text-pink-400 border border-pink-500/20" dotClass="bg-pink-500" tools={imageTools} />
+            </>
+          )}
+          {show('excel') && (
+            <>
+              {activeTab === 'all' && <Divider label="Excel / CSV" />}
+              <ToolGroup label="Excel / CSV Tools" sublabel="Convert, export, merge and diff spreadsheet files in seconds" accentClass="bg-green-500/10 text-green-400 border border-green-500/20" dotClass="bg-green-500" tools={excelTools} />
+            </>
+          )}
+          {show('text') && (
+            <>
+              {activeTab === 'all' && <Divider label="Text Tools" />}
+              <ToolGroup label="Text Tools" sublabel="Transform, compare and convert plain text — no file upload needed" accentClass="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" dotClass="bg-yellow-500" tools={textTools} />
+            </>
+          )}
+          {show('dev') && (
+            <>
+              {activeTab === 'all' && <Divider label="Developer Utilities" />}
+              <ToolGroup label="Developer Utilities" sublabel="JSON, Base64, hashing, JWT, regex and more — all in your browser" accentClass="bg-violet-500/10 text-violet-400 border border-violet-500/20" dotClass="bg-violet-500" tools={devTools} />
+            </>
+          )}
+          {show('finance') && (
+            <>
+              {activeTab === 'all' && <Divider label="Finance" />}
+              <ToolGroup label="Finance" sublabel="Loan, compound interest, tip and discount calculators" accentClass="bg-red-500/10 text-red-400 border border-red-500/20" dotClass="bg-red-500" tools={financeTools} />
+            </>
+          )}
+          {show('date') && (
+            <>
+              {activeTab === 'all' && <Divider label="Date &amp; Time" />}
+              <ToolGroup label="Date &amp; Time" sublabel="Age, differences, timezones and working days" accentClass="bg-sky-500/10 text-sky-400 border border-sky-500/20" dotClass="bg-sky-500" tools={dateTools} />
+            </>
+          )}
+          {show('css') && (
+            <>
+              {activeTab === 'all' && <Divider label="CSS Tools" />}
+              <ToolGroup label="CSS Tools" sublabel="Visual CSS builders and formatters — copy ready-to-use code" accentClass="bg-purple-500/10 text-purple-400 border border-purple-500/20" dotClass="bg-purple-500" tools={cssTools} />
+            </>
+          )}
+          {show('calc') && (
+            <>
+              {activeTab === 'all' && <Divider label="Calculators" />}
+              <ToolGroup label="Calculators" sublabel="Quick math and unit calculations in your browser" accentClass="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" dotClass="bg-emerald-500" tools={[...calcTools, ...utilityTools]} />
+            </>
+          )}
         </div>
       </div>
     </section>
