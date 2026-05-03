@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
+import { UpgradeModal } from "@/components/modals/UpgradeModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,10 +70,6 @@ export default function RootLayout({
           fontFamily: 'inherit',
         },
         elements: {
-          rootBox: {
-            width: '100%',
-            maxWidth: '30rem',
-          },
           modalBackdrop: {
             backgroundColor: 'rgba(2, 2, 4, 0.82)',
             backdropFilter: 'blur(8px)',
@@ -126,6 +123,21 @@ export default function RootLayout({
           socialButtonsBlockButtonText: {
             color: '#f4f4f5',
             fontWeight: 600,
+          },
+          socialButtonsIconButton: {
+            height: '2.75rem',
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.14)',
+            borderRadius: '0.8rem',
+            color: '#ffffff',
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.13)',
+              borderColor: 'rgba(255, 255, 255, 0.24)',
+            },
+          },
+          socialButtonsProviderIcon: {
+            opacity: 1,
           },
           dividerText: {
             color: '#71717a',
@@ -182,6 +194,42 @@ export default function RootLayout({
             color: '#ddd6fe',
             border: '1px solid rgba(167, 139, 250, 0.22)',
           },
+          userButtonPopoverRootBox: {
+            zIndex: 60,
+          },
+          userButtonPopoverCard: {
+            width: '23.5rem',
+            backgroundColor: '#0f0f14',
+            border: '1px solid rgba(255, 255, 255, 0.10)',
+            borderRadius: '1.25rem',
+            boxShadow: '0 24px 80px rgba(0, 0, 0, 0.55)',
+            overflow: 'hidden',
+          },
+          userButtonPopoverMain: {
+            backgroundColor: '#0f0f14',
+          },
+          userPreviewMainIdentifier: {
+            color: '#f8fafc',
+            fontWeight: 700,
+          },
+          userPreviewSecondaryIdentifier: {
+            color: '#a1a1aa',
+          },
+          userButtonPopoverActionButton: {
+            color: '#e4e4e7',
+            backgroundColor: 'transparent',
+            '&:hover': {
+              color: '#ffffff',
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            },
+          },
+          userButtonPopoverActionButtonIcon: {
+            color: '#a78bfa',
+          },
+          userButtonPopoverFooter: {
+            backgroundColor: '#121218',
+            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          },
         },
       }}
     >
@@ -189,6 +237,7 @@ export default function RootLayout({
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {children}
           <Toaster richColors position="top-right" />
+          <UpgradeModal />
         </body>
       </html>
     </ClerkProvider>

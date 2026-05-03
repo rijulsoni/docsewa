@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SubscriptionStatus {
+  FREE
+  PRO
+  TEAMS
+}
+
+enum UsageType {
+  CHAT_PDF
+  DOCUMENT_TRANSLATOR
+  BATCH_PROCESS
+  LARGE_FILE
+}
+
+model User {
+  id               String             @id @default(cuid())
+  clerkId          String             @unique
+  email            String             @unique
+  stripeCustomerId String?            @unique
+  status           SubscriptionStatus @default(FREE)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  usages           Usage[]
+  history          History[]
+
+  @@map("users")
+}
+
+model Usage {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  type      UsageType
+  date      DateTime  @default(now())
+  count     Int       @default(0)
+
+  @@unique([userId, type, date])
+  @@map("usages")
+}
+
+model History {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  fileName  String
+  toolUsed  String
+  fileUrl   String?
+  createdAt DateTime @default(now())
+
+  @@map("history")
+}

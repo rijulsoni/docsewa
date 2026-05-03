@@ -83,7 +83,6 @@ html, body {
 
 /* ─── Clerk auth modal sizing ─────────────────────────────── */
 .cl-modalContent,
-.cl-rootBox,
 .cl-cardBox {
   width: min(92vw, 30rem) !important;
   max-width: 30rem !important;
@@ -91,6 +90,53 @@ html, body {
 
 .cl-card {
   width: 100% !important;
+}
+
+.cl-socialButtonsIconButton {
+  height: 2.75rem !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 0.8rem !important;
+  box-shadow: none !important;
+}
+
+.cl-socialButtonsIconButton:hover {
+  background: rgba(255, 255, 255, 0.13) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+.cl-socialButtonsProviderIcon {
+  opacity: 1 !important;
+}
+
+.cl-userButtonPopoverCard {
+  background: #0f0f14 !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55) !important;
+  overflow: hidden !important;
+}
+
+.cl-userButtonPopoverMain,
+.cl-userButtonPopoverFooter {
+  background: #0f0f14 !important;
+}
+
+.cl-userPreviewMainIdentifier,
+.cl-userButtonPopoverActionButton {
+  color: #f8fafc !important;
+}
+
+.cl-userPreviewSecondaryIdentifier {
+  color: #a1a1aa !important;
+}
+
+.cl-userButtonPopoverActionButton:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.cl-userButtonPopoverActionButtonIcon {
+  color: #a78bfa !important;
 }
 
 /* ─── Noise overlay (subtle texture) ─────────────────────── */

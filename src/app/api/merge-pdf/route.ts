@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
+import { auth } from '@clerk/nextjs/server';
+import { getSubscriptionStatus } from '@/lib/usage';
+import { SubscriptionStatus } from '@/generated/prisma';
 
-const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB per file
+const LIMITS = {
+  [SubscriptionStatus.FREE]: 10 * 1024 * 1024, // 10 MB
+  [SubscriptionStatus.PRO]: 50 * 1024 * 1024, // 50 MB
+  [SubscriptionStatus.TEAMS]: 200 * 1024 * 1024, // 200 MB
+};
+
 const MAX_FILES = 20;
 
 export async function POST(request: NextRequest) {
   try {
+    const { userId } = await auth();
+    const status = userId ? await getSubscriptionStatus(userId) : SubscriptionStatus.FREE;
+    const maxFileSize = LIMITS[status];
+
     const formData = await request.formData();
     const files = formData.getAll('files') as File[];
 
@@ -33,10 +45,12 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      if (file.size > MAX_FILE_SIZE) {
+      if (file.size > maxFileSize) {
         return NextResponse.json(
-          { error: `File "${file.name}" exceeds the 100 MB limit.` },
-          { status: 400 }
+          { 
+            error: `File "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)}MB) exceeds your ${status === 'FREE' ? '10MB' : status === 'PRO' ? '50MB' : '200MB'} limit. Please upgrade to Pro for larger files.` 
+          },
+          { status: 403 }
         );
       }
 

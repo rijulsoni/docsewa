@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Menu, X, FileText, ChevronDown,
+  LayoutDashboard, BadgeDollarSign, Search,
   // PDF
   FileImage, FileDown, Files, Scissors, RotateCw, Stamp, Hash, PanelTop,
   Crop, Minimize2, Layers, Tag, Lock, LockOpen, PenLine, ArrowUpDown, Trash2,
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
+import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -334,30 +336,39 @@ const ToolLink: React.FC<{ tool: NavTool; pathname: string; compact?: boolean }>
 
 interface CategoryDropdownProps {
   label: string;
-  dotColor: string;
+  icon: React.ReactNode;
   sections?: NavSection[];
   tools?: NavTool[];
   pathname: string;
   isOpen: boolean;
+  isActive: boolean;
   onToggle: () => void;
 }
 
 const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
-  label, dotColor, sections, tools, pathname, isOpen, onToggle,
+  label, icon, sections, tools, pathname, isOpen, isActive, onToggle,
 }) => (
   <div className="relative">
     <button
       onClick={onToggle}
       className={cn(
-        'flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-150',
-        isOpen
-          ? 'bg-white/[0.08] text-white ring-1 ring-white/10'
-          : 'text-white/55 hover:text-white hover:bg-white/[0.05]'
+        'relative flex h-9 items-center gap-2 rounded-full px-3 text-[13px] font-semibold transition-all duration-150 whitespace-nowrap',
+        isOpen || isActive
+          ? 'bg-white/[0.10] text-white shadow-sm shadow-black/20 ring-1 ring-white/[0.08]'
+          : 'text-white/58 hover:bg-white/[0.065] hover:text-white'
       )}
     >
-      <span className={cn('w-2 h-2 rounded-full', dotColor)} />
+      <span className={cn(
+        'text-white/38 transition-colors',
+        (isOpen || isActive) && 'text-indigo-300'
+      )}>
+        {icon}
+      </span>
       {label}
-      <ChevronDown className={cn('h-3.5 w-3.5 transition-transform duration-200', isOpen && 'rotate-180')} />
+      <ChevronDown className={cn('h-3.5 w-3.5 transition-transform duration-200 shrink-0 opacity-50', isOpen && 'rotate-180 opacity-90')} />
+      {(isOpen || isActive) && (
+        <span className="absolute inset-x-4 -bottom-[5px] h-px rounded-full bg-gradient-to-r from-indigo-400/0 via-indigo-400 to-indigo-400/0" />
+      )}
     </button>
 
     {isOpen && (
@@ -498,7 +509,7 @@ const MobileSection: React.FC<{
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-xl hover:bg-white/[0.04] transition-all"
+        className="w-full flex items-center justify-between px-3 py-2.5 rounded-2xl border border-white/[0.045] bg-white/[0.018] hover:bg-white/[0.045] transition-all"
       >
         <div className="flex items-center gap-2.5">
           <span className={cn('w-2 h-2 rounded-full', dotColor)} />
@@ -588,6 +599,7 @@ const MobileSection: React.FC<{
 
 const Navbar = () => {
   const { isSignedIn } = useUser();
+  const { onOpen } = useUpgradeModal();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -626,100 +638,169 @@ const Navbar = () => {
   }, [openDropdown]);
 
   const isAllActive = allToolPaths.includes(pathname);
+  const isPdfActive = pdfSections.some((section) => section.tools.some((tool) => tool.href === pathname));
+  const isWordActive = wordTools.some((tool) => tool.href === pathname);
+  const isImageActive = imageTools.some((tool) => tool.href === pathname);
+  const isUtilitiesActive = utilitySections.some((section) => section.tools.some((tool) => tool.href === pathname));
+  const totalTools = allToolSections.reduce((sum, section) => sum + section.count, 0);
 
   const toggleDropdown = (menu: string) =>
     setOpenDropdown((p) => (p === menu ? null : menu));
 
+  const openUpgradeFromMobileMenu = () => {
+    setIsMenuOpen(false);
+    window.setTimeout(onOpen, 120);
+  };
+
   return (
     <nav className={cn(
-      'sticky top-0 z-50 transition-all duration-300',
+      'sticky top-0 z-50 border-b transition-all duration-300',
       isScrolled
-        ? 'bg-[#050507]/92 backdrop-blur-2xl border-b border-white/[0.06] shadow-lg shadow-black/20'
-        : 'bg-transparent'
+        ? 'border-white/[0.08] bg-[#050507]/92 backdrop-blur-2xl shadow-[0_18px_50px_rgba(0,0,0,0.32)]'
+        : 'border-white/[0.06] bg-[#050507]/88 backdrop-blur-xl'
     )}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16 gap-3" ref={navRef}>
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
+        <div className="flex items-center h-16 gap-5" ref={navRef}>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-[0_0_16px_rgba(99,102,241,0.4)]">
-              <FileText className="h-4 w-4 text-white" />
+          <Link href="/" className="group flex items-center gap-2.5 shrink-0 rounded-2xl py-1 pr-2 transition-colors hover:bg-white/[0.035]">
+            <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-[0_12px_30px_rgba(99,102,241,0.30)] ring-1 ring-white/15">
+              <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 transition-opacity group-hover:opacity-100" />
+              <FileText className="relative h-[18px] w-[18px] text-white" />
             </div>
-            <span className="text-lg font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
-              DocSewa
-            </span>
+            <div className="leading-none">
+              <span className="block text-lg font-bold bg-gradient-to-r from-white to-white/76 bg-clip-text text-transparent">
+                DocSewa
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1 flex-1 ml-4">
-            <CategoryDropdown
-              label="PDF"
-              dotColor="bg-indigo-500"
-              sections={pdfSections}
-              pathname={pathname}
-              isOpen={openDropdown === 'pdf'}
-              onToggle={() => toggleDropdown('pdf')}
-            />
-            <CategoryDropdown
-              label="Word"
-              dotColor="bg-blue-500"
-              tools={wordTools}
-              pathname={pathname}
-              isOpen={openDropdown === 'word'}
-              onToggle={() => toggleDropdown('word')}
-            />
-            <CategoryDropdown
-              label="Image"
-              dotColor="bg-pink-500"
-              tools={imageTools}
-              pathname={pathname}
-              isOpen={openDropdown === 'image'}
-              onToggle={() => toggleDropdown('image')}
-            />
-            <CategoryDropdown
-              label="Utilities"
-              dotColor="bg-emerald-500"
-              sections={utilitySections}
-              pathname={pathname}
-              isOpen={openDropdown === 'utilities'}
-              onToggle={() => toggleDropdown('utilities')}
-            />
+          <div className="hidden lg:flex items-center flex-1 gap-3 xl:gap-4">
+            {/* Primary categories */}
+            <div className="flex items-center gap-1 rounded-full border border-white/[0.07] bg-white/[0.035] p-1 shadow-inner shadow-white/[0.02]">
+              <CategoryDropdown
+                label="PDF"
+                icon={<FileText className="h-3.5 w-3.5" />}
+                sections={pdfSections}
+                pathname={pathname}
+                isOpen={openDropdown === 'pdf'}
+                isActive={isPdfActive}
+                onToggle={() => toggleDropdown('pdf')}
+              />
+              <CategoryDropdown
+                label="Word"
+                icon={<FileOutput className="h-3.5 w-3.5" />}
+                tools={wordTools}
+                pathname={pathname}
+                isOpen={openDropdown === 'word'}
+                isActive={isWordActive}
+                onToggle={() => toggleDropdown('word')}
+              />
+              <CategoryDropdown
+                label="Image"
+                icon={<ImageIcon className="h-3.5 w-3.5" />}
+                tools={imageTools}
+                pathname={pathname}
+                isOpen={openDropdown === 'image'}
+                isActive={isImageActive}
+                onToggle={() => toggleDropdown('image')}
+              />
+              <CategoryDropdown
+                label="Utilities"
+                icon={<Calculator className="h-3.5 w-3.5" />}
+                sections={utilitySections}
+                pathname={pathname}
+                isOpen={openDropdown === 'utilities'}
+                isActive={isUtilitiesActive}
+                onToggle={() => toggleDropdown('utilities')}
+              />
+            </div>
 
-            {/* All Tools Button */}
-            <div className="relative ml-auto">
+            {/* Right cluster: Pricing/Dashboard + CTA + Auth */}
+            <div className="relative hidden w-[230px] 2xl:w-[280px] shrink-0 xl:block">
               <button
                 onClick={() => toggleDropdown('all')}
                 className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150',
+                  'group flex h-11 w-full items-center gap-3 rounded-full border px-3.5 text-[13px] font-semibold transition-all',
                   isAllActive || openDropdown === 'all'
-                    ? 'bg-gradient-to-r from-indigo-500/15 to-violet-500/15 text-indigo-300 ring-1 ring-indigo-500/20'
-                    : 'text-white/55 hover:text-white hover:bg-white/[0.05]'
+                    ? 'border-indigo-400/25 bg-indigo-500/10 text-white shadow-sm shadow-indigo-950/30'
+                    : 'border-white/[0.08] bg-white/[0.035] text-white/58 hover:border-white/[0.14] hover:bg-white/[0.055] hover:text-white'
                 )}
               >
-                <Grid3X3 className="h-4 w-4" />
-                All Tools
-                <ChevronDown className={cn('h-3.5 w-3.5 transition-transform duration-200', openDropdown === 'all' && 'rotate-180')} />
+                <span className="flex min-w-0 items-center gap-2">
+                  <Search className="h-4 w-4 shrink-0 text-white/38 group-hover:text-white/55" />
+                  <span className="shrink-0 text-white/82">All tools</span>
+                </span>
+                <span className="ml-auto shrink-0 rounded-full border border-white/[0.08] bg-black/20 px-2 py-0.5 text-[10px] font-bold text-white/36">
+                  {totalTools}
+                </span>
               </button>
               {openDropdown === 'all' && <AllToolsMegaMenu pathname={pathname} />}
             </div>
-          </div>
 
-          {/* Auth — desktop */}
-          <div className="hidden lg:flex items-center ml-3">
-            {isSignedIn ? (
-              <UserButton />
-            ) : (
-              <SignInButton mode="modal">
-                <button className="px-4 py-2 rounded-xl text-sm font-medium text-white/70 hover:text-white border border-white/[0.10] hover:border-white/[0.20] hover:bg-white/[0.05] transition-all">
-                  Sign in
-                </button>
-              </SignInButton>
-            )}
+            <div className={cn(
+              'flex items-center rounded-full border border-white/[0.07] bg-white/[0.03] p-1',
+              isSignedIn ? 'ml-auto gap-2' : 'ml-auto gap-1.5'
+            )}>
+              <Link
+                href="/pricing"
+                className={cn(
+                  'hidden xl:inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-all duration-150 whitespace-nowrap',
+                  pathname === '/pricing'
+                    ? 'bg-white/[0.10] text-white ring-1 ring-white/[0.08]'
+                    : 'text-white/58 hover:bg-white/[0.065] hover:text-white'
+                )}
+              >
+                <BadgeDollarSign className="h-3.5 w-3.5 text-white/45" />
+                Pricing
+              </Link>
+              {isSignedIn ? (
+                <Link
+                  href="/dashboard"
+                  className={cn(
+                    'hidden xl:inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-all duration-150 whitespace-nowrap',
+                    pathname === '/dashboard'
+                      ? 'bg-white/[0.10] text-white ring-1 ring-white/[0.08]'
+                      : 'text-white/58 hover:bg-white/[0.065] hover:text-white'
+                  )}
+                >
+                  <LayoutDashboard className="h-3.5 w-3.5 text-white/45" />
+                  Dashboard
+                </Link>
+              ) : null}
+
+              {isSignedIn && (
+                <div className="hidden xl:block w-px h-5 bg-white/[0.08] mx-0.5" />
+              )}
+
+              {/* Go Pro CTA */}
+              <button
+                onClick={onOpen}
+                className="group relative h-10 px-4 rounded-full text-[13px] font-bold text-white whitespace-nowrap overflow-hidden bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 shadow-[0_12px_26px_rgba(124,58,237,0.30)] ring-1 ring-white/15 transition-all hover:-translate-y-px hover:shadow-[0_0_28px_rgba(139,92,246,0.45)] flex items-center gap-1.5"
+              >
+                <Sparkles className="h-3.5 w-3.5 shrink-0" />
+                Go Pro
+              </button>
+
+              {/* Auth */}
+              <div className={cn('flex h-10 items-center', isSignedIn ? 'ml-0.5' : 'ml-1')}>
+                {isSignedIn ? (
+                  <UserButton />
+                ) : (
+                  <SignInButton mode="modal">
+                    <button className="h-9 rounded-full border border-white/[0.13] bg-white/[0.055] px-4 text-[13px] font-semibold text-white/82 hover:border-white/[0.22] hover:bg-white/[0.09] hover:text-white transition-all whitespace-nowrap">
+                      Sign in
+                    </button>
+                  </SignInButton>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Mobile Menu Toggle */}
           <button
-            className="lg:hidden ml-auto p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.08] transition-all"
+            className="lg:hidden ml-auto h-10 w-10 rounded-full border border-white/[0.09] bg-white/[0.045] text-white/65 shadow-inner shadow-white/[0.02] hover:text-white hover:bg-white/[0.08] transition-all flex items-center justify-center"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -730,8 +811,69 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden border-t border-white/[0.06] bg-[#050507]/98 backdrop-blur-2xl max-h-[85vh] overflow-y-auto">
-          <div className="container mx-auto px-2 py-3 space-y-1">
+        <div className="lg:hidden absolute left-3 right-3 top-full mt-2 max-h-[calc(100vh-5rem)] overflow-y-auto rounded-3xl border border-white/[0.08] bg-[#08080b]/98 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.55)]">
+          <div className="px-3 py-3 space-y-1">
+            <div className="px-2 pb-3">
+              <div className="mb-3 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-bold text-white">Menu</p>
+                  <p className="text-xs text-white/35">{totalTools} tools available</p>
+                </div>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.05] text-white/50 hover:bg-white/[0.08] hover:text-white"
+                  aria-label="Close menu"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button 
+                  onClick={openUpgradeFromMobileMenu}
+                  className="col-span-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_30px_rgba(99,102,241,0.26)]"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Upgrade to Pro
+                </button>
+                <Link
+                  href="/pricing"
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.045] px-3 py-2.5 text-sm font-semibold text-white/70"
+                >
+                  <BadgeDollarSign className="h-4 w-4 text-white/45" />
+                  Pricing
+                </Link>
+                {isSignedIn ? (
+                  <Link
+                    href="/dashboard"
+                    className={cn(
+                      'flex items-center justify-center gap-2 rounded-2xl border px-3 py-2.5 text-sm font-semibold transition-all',
+                      pathname === '/dashboard'
+                        ? 'border-indigo-500/30 bg-indigo-500/15 text-indigo-300'
+                        : 'border-white/[0.08] bg-white/[0.045] text-white/70'
+                    )}
+                  >
+                    <LayoutDashboard className="h-4 w-4 text-white/45" />
+                    Dashboard
+                  </Link>
+                ) : (
+                  <SignInButton mode="modal">
+                    <button
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex w-full items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.045] px-3 py-2.5 text-sm font-semibold text-white/70"
+                    >
+                      Sign in
+                    </button>
+                  </SignInButton>
+                )}
+              </div>
+            </div>
+            <div className="h-px bg-white/[0.06] my-2" />
+            <div className="px-1 py-1">
+              <div className="mb-2 flex items-center gap-2 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/25">
+                <Grid3X3 className="h-3 w-3" />
+                Browse categories
+              </div>
+            </div>
             <MobileSection
               label="PDF Tools"
               dotColor="bg-indigo-500"
@@ -804,21 +946,17 @@ const Navbar = () => {
             />
 
             {/* Mobile auth */}
-            <div className="h-px bg-white/[0.06] my-2" />
-            <div className="px-2 py-3">
-              {isSignedIn ? (
-                <div className="flex items-center gap-3">
-                  <UserButton />
-                  <span className="text-sm text-white/50">My Account</span>
+            {isSignedIn && (
+              <>
+                <div className="h-px bg-white/[0.06] my-2" />
+                <div className="px-2 py-3">
+                  <div className="flex items-center gap-3">
+                    <UserButton />
+                    <span className="text-sm text-white/50">My Account</span>
+                  </div>
                 </div>
-              ) : (
-                <SignInButton mode="modal">
-                  <button className="w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white/70 border border-white/[0.10] hover:border-white/[0.20] hover:bg-white/[0.05] transition-all">
-                    Sign in to DocSewa
-                  </button>
-                </SignInButton>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
       )}

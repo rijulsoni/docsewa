@@ -38,7 +38,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
 
   return (
     <div
-      className="w-full max-w-2xl mx-auto mb-8"
+      className="w-full max-w-2xl mx-auto mb-5 sm:mb-8"
       onDrop={handleDrop}
       onDragOver={onDragOver}
       onDragEnter={handleDragEnter}
@@ -55,7 +55,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
         />
         <div
           className={`
-            relative border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center
+            relative border-2 border-dashed rounded-2xl p-5 sm:p-8 flex flex-col items-center justify-center
             transition-all duration-300 select-none overflow-hidden
             ${isDragActive
               ? 'border-indigo-500/70 bg-indigo-500/[0.06] shadow-[0_0_40px_rgba(94,106,210,0.15)]'
@@ -69,23 +69,23 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
           )}
 
           {/* Icon */}
-          <div className={`relative w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 ${
+          <div className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 ${
             isDragActive
               ? 'bg-indigo-500/20 shadow-[0_0_24px_rgba(94,106,210,0.3)]'
               : 'bg-white/[0.04]'
           }`}>
             {isDragActive ? (
-              <Sparkles className="h-7 w-7 text-indigo-400" />
+              <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-indigo-400" />
             ) : (
-              <Upload className="h-7 w-7 text-white/30" />
+              <Upload className="h-6 w-6 sm:h-7 sm:w-7 text-white/30" />
             )}
           </div>
 
-          <h3 className={`text-xl font-semibold mb-2 transition-colors ${isDragActive ? 'text-indigo-300' : 'text-white/70'}`}>
+          <h3 className={`text-lg sm:text-xl font-semibold mb-1.5 sm:mb-2 transition-colors ${isDragActive ? 'text-indigo-300' : 'text-white/70'}`}>
             {isDragActive ? 'Drop your files here' : (label || 'Upload your files')}
           </h3>
 
-          <p className="text-sm text-white/35 text-center mb-4 max-w-xs leading-relaxed">
+          <p className="text-xs sm:text-sm text-white/35 text-center mb-4 max-w-xs leading-relaxed">
             {sublabel || (
               <>Drag & drop here, or click to browse<br />
                 <span className="text-white/20 text-xs">PDF, Image, DOCX, XLSX, CSV — any file</span>
@@ -93,7 +93,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
             )}
           </p>
 
-          <div className="relative flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-semibold shadow-[0_4px_16px_rgba(94,106,210,0.4)] transition-all duration-200 hover:shadow-[0_4px_24px_rgba(94,106,210,0.55)]">
+          <div className="relative flex items-center gap-2 px-5 sm:px-6 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-semibold shadow-[0_4px_16px_rgba(94,106,210,0.4)] transition-all duration-200 hover:shadow-[0_4px_24px_rgba(94,106,210,0.55)]">
             <Upload className="h-4 w-4" />
             Choose Files
           </div>

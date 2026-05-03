@@ -4,10 +4,12 @@ import ToolPageLayout from '@/components/pages/ToolPageLayout';
 import UploadDropzone from '@/components/pages/UploadDropzone';
 import { Files, X, GripVertical, Download, Loader2, CheckCircle2, Plus, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 
 interface PdfFile { id: string; file: File; }
 
 export default function MergePdfPage() {
+  const { onOpen } = useUpgradeModal();
   const [pdfs, setPdfs] = useState<PdfFile[]>([]);
   const [isConverting, setIsConverting] = useState(false);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -46,6 +48,13 @@ export default function MergePdfPage() {
     try {
       const fd = new FormData(); pdfs.forEach(({ file }) => fd.append('files', file));
       const res = await fetch('/api/merge-pdf', { method: 'POST', body: fd });
+      
+      if (res.status === 403) {
+        onOpen();
+        setIsConverting(false);
+        return;
+      }
+
       if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
       setResultUrl(URL.createObjectURL(await res.blob()));
       toast.success('PDFs merged!');

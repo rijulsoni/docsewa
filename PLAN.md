@@ -26,6 +26,28 @@ DocSewa is a free, privacy-first document tools platform. All 97 tools run in th
 
 ---
 
+## AI Feature Roadmap
+
+### 1. Document Intelligence
+- **Chat with PDF:** Conversational AI for document analysis and Q&A.
+- **AI PDF Summarizer:** Instant TL;DR and key point extraction for long docs.
+- **Smart Form Filler:** Automated suggestions for completing blank PDF forms.
+
+### 2. Visual & Image AI
+- **AI Background Remover:** Professional-grade background isolation for photos.
+- **AI Image Upscaler:** Enhancement of low-resolution and blurry images.
+- **AI OCR Scanner:** High-precision text extraction from handwriting and complex tables.
+
+### 3. Translation & Global
+- **AI Document Translator:** Layout-preserving translation (PDF/Word stays same format).
+- **AI Audio-to-Doc:** Automated transcription of voice/video to formatted Word docs.
+
+### 4. Content Writing
+- **AI Tone Changer:** Contextual rewriting (Professional, Friendly, Shorten, etc.).
+- **AI Resume Optimizer:** Resume tailoring based on specific job descriptions.
+
+---
+
 ## Business Model
 
 ### Core Philosophy
@@ -156,20 +178,22 @@ Never watermark output files. Let users share results naturally — this drives 
 ## Implementation Roadmap
 
 ### Phase 1 — Auth + Billing (Week 1–2)
-- [ ] Integrate Clerk auth (Google OAuth + email)
-- [ ] Add sign-in/sign-up pages with dark theme
-- [ ] Store daily usage counts in Clerk user metadata
-- [ ] Build upgrade modal component (triggered at limit)
+- [x] Integrate Clerk auth (Google OAuth + email)
+- [x] Add sign-in/sign-up pages with dark theme
+- [x] Initialize Prisma Database Schema (Users, Usage, History)
+- [x] Implement Clerk Webhook to sync users to DB
+- [x] Create usage tracking utilities (`checkUsageLimit`, `incrementUsage`)
+- [x] Build upgrade modal component (triggered at limit)
 - [ ] Integrate Stripe checkout (Pro plan)
 - [ ] Add Stripe webhook to set `isPro` flag on user
-- [ ] Gate Chat with PDF API route behind usage check
+- [x] Gate Merge PDF API route behind usage/size check
 
 ### Phase 2 — Pro Features (Week 3–4)
-- [ ] Increase file size limit to 50MB for Pro users
+- [x] Increase file size limit (10MB → 50MB/200MB) for Pro users
 - [ ] Unlimited Chat with PDF for Pro
 - [ ] Unlimited Document Translator for Pro
-- [ ] Batch processing (up to 20 files) for Pro
-- [ ] Document history page (last 30 docs)
+- [x] Batch processing (up to 20 files) for Pro
+- [x] Document history page (last 30 docs) / User Dashboard
 
 ### Phase 3 — Teams (Month 2)
 - [ ] Team workspace with shared seats

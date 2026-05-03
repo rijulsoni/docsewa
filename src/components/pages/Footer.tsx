@@ -54,6 +54,7 @@ const toolGroups = [
 ];
 
 const company = [
+  { href: '/pricing', label: 'Pricing' },
   { href: '#', label: 'Privacy Policy' },
   { href: '#', label: 'Terms of Service' },
   { href: '#', label: 'Contact' },
@@ -77,7 +78,7 @@ const Footer = () => {
               <span className="text-base font-semibold accent-gradient-text">DocSewa</span>
             </Link>
             <p className="text-sm text-white/35 leading-relaxed max-w-xs">
-              94 professional tools for PDF, Word, Image, Excel & more. Everything runs locally — your files never touch our servers.
+              97 professional tools for PDF, Word, Image, Excel & more. Everything runs locally — your files never touch our servers.
             </p>
           </div>
 
