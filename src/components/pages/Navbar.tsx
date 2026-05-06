@@ -21,6 +21,7 @@ import {
 import { cn } from '@/lib/utils';
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
+import { useCommandPalette } from '@/components/CommandPalette';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -402,96 +403,6 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   </div>
 );
 
-// ─── All Tools Mega Menu ──────────────────────────────────────────────────────
-
-const AllToolsMegaMenu: React.FC<{ pathname: string }> = ({ pathname }) => {
-  const [activeCategory, setActiveCategory] = useState(() => {
-    const found = allToolSections.find((s) => s.tools.some((t) => t.href === pathname));
-    return found?.label ?? allToolSections[0].label;
-  });
-
-  const activeSection = allToolSections.find((s) => s.label === activeCategory) ?? allToolSections[0];
-  const totalTools = allToolSections.reduce((sum, s) => sum + s.count, 0);
-
-  return (
-    <div className="absolute top-full right-0 mt-2 rounded-2xl border border-white/[0.08] bg-[#0a0a0d]/98 backdrop-blur-2xl shadow-[0_24px_80px_rgba(0,0,0,0.7)] overflow-hidden w-[820px] z-50">
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.06]">
-        <div className="flex items-center gap-2">
-          <Grid3X3 className="h-4 w-4 text-indigo-400" />
-          <span className="text-sm font-semibold text-white/80">All Tools</span>
-          <span className="text-[11px] text-white/30">{allToolSections.length} categories</span>
-        </div>
-        <span className="text-[11px] text-white/40 bg-white/[0.06] px-2.5 py-1 rounded-full font-semibold">
-          {totalTools} tools
-        </span>
-      </div>
-
-      <div className="flex h-[440px]">
-        {/* Left sidebar — category list */}
-        <div className="w-[196px] shrink-0 border-r border-white/[0.06] overflow-y-auto overscroll-contain py-2 px-2 space-y-0.5">
-          {allToolSections.map((section) => {
-            const isActive = activeCategory === section.label;
-            const hasActiveTool = section.tools.some((t) => t.href === pathname);
-            return (
-              <button
-                key={section.label}
-                onClick={() => setActiveCategory(section.label)}
-                className={cn(
-                  'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-150 text-left',
-                  isActive
-                    ? 'bg-indigo-500/15 ring-1 ring-indigo-500/20'
-                    : 'hover:bg-white/[0.05]'
-                )}
-              >
-                <div className={cn(
-                  'w-7 h-7 rounded-lg bg-gradient-to-br flex items-center justify-center text-white shrink-0',
-                  section.iconGrad
-                )}>
-                  {section.icon}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className={cn(
-                    'text-xs font-medium truncate',
-                    isActive ? 'text-indigo-300' : 'text-white/65'
-                  )}>{section.label}</p>
-                  <p className="text-[10px] text-white/25">{section.count} tools</p>
-                </div>
-                {hasActiveTool && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right pane — tool grid */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-4">
-          {/* Section header */}
-          <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-white/[0.05]">
-            <div className={cn(
-              'w-7 h-7 rounded-lg bg-gradient-to-br flex items-center justify-center text-white shrink-0',
-              activeSection.iconGrad
-            )}>
-              {activeSection.icon}
-            </div>
-            <span className="text-sm font-semibold text-white/80">{activeSection.label}</span>
-            <span className="text-[11px] text-white/30 bg-white/[0.05] px-2 py-0.5 rounded-full">
-              {activeSection.count} tools
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-0.5">
-            {activeSection.tools.map((tool) => (
-              <ToolLink key={tool.href} tool={tool} pathname={pathname} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // ─── Mobile Menu Section ──────────────────────────────────────────────────────
 
 const MobileSection: React.FC<{
@@ -600,6 +511,7 @@ const MobileSection: React.FC<{
 const Navbar = () => {
   const { isSignedIn } = useUser();
   const { onOpen } = useUpgradeModal();
+  const { openPalette } = useCommandPalette();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -717,26 +629,27 @@ const Navbar = () => {
               />
             </div>
 
-            {/* Right cluster: Pricing/Dashboard + CTA + Auth */}
+            {/* Search button — opens command palette */}
             <div className="relative hidden w-[230px] 2xl:w-[280px] shrink-0 xl:block">
               <button
-                onClick={() => toggleDropdown('all')}
+                onClick={openPalette}
+                aria-label="Search all tools"
                 className={cn(
                   'group flex h-11 w-full items-center gap-3 rounded-full border px-3.5 text-[13px] font-semibold transition-all',
-                  isAllActive || openDropdown === 'all'
+                  isAllActive
                     ? 'border-indigo-400/25 bg-indigo-500/10 text-white shadow-sm shadow-indigo-950/30'
                     : 'border-white/[0.08] bg-white/[0.035] text-white/58 hover:border-white/[0.14] hover:bg-white/[0.055] hover:text-white'
                 )}
               >
                 <span className="flex min-w-0 items-center gap-2">
                   <Search className="h-4 w-4 shrink-0 text-white/38 group-hover:text-white/55" />
-                  <span className="shrink-0 text-white/82">All tools</span>
+                  <span className="shrink-0 text-white/60 group-hover:text-white/82">Search tools…</span>
                 </span>
-                <span className="ml-auto shrink-0 rounded-full border border-white/[0.08] bg-black/20 px-2 py-0.5 text-[10px] font-bold text-white/36">
-                  {totalTools}
+                <span className="ml-auto flex items-center gap-1 shrink-0">
+                  <kbd className="inline-flex items-center justify-center px-1.5 h-[18px] rounded-md border border-white/[0.10] bg-black/20 text-[10px] font-bold text-white/40">⌘</kbd>
+                  <kbd className="inline-flex items-center justify-center w-[18px] h-[18px] rounded-md border border-white/[0.10] bg-black/20 text-[10px] font-bold text-white/40">K</kbd>
                 </span>
               </button>
-              {openDropdown === 'all' && <AllToolsMegaMenu pathname={pathname} />}
             </div>
 
             <div className={cn(
@@ -828,7 +741,15 @@ const Navbar = () => {
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <button 
+                <button
+                  onClick={() => { setIsMenuOpen(false); window.setTimeout(openPalette, 120); }}
+                  className="col-span-2 flex items-center gap-3 rounded-2xl border border-white/[0.10] bg-white/[0.045] hover:bg-white/[0.08] px-4 py-3 text-sm font-semibold text-white/65 transition-all"
+                >
+                  <Search className="h-4 w-4 text-white/45" />
+                  <span className="flex-1 text-left">Search {totalTools} tools…</span>
+                  <span className="text-[10px] font-bold text-white/30 bg-white/[0.05] border border-white/[0.08] rounded px-1.5 py-0.5">⌘K</span>
+                </button>
+                <button
                   onClick={openUpgradeFromMobileMenu}
                   className="col-span-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_30px_rgba(99,102,241,0.26)]"
                 >

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
 import { UpgradeModal } from "@/components/modals/UpgradeModal";
+import { CommandPaletteProvider } from "@/components/CommandPalette";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -235,9 +236,11 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          {children}
-          <Toaster richColors position="top-right" />
-          <UpgradeModal />
+          <CommandPaletteProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+            <UpgradeModal />
+          </CommandPaletteProvider>
         </body>
       </html>
     </ClerkProvider>

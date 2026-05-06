@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { Shield, Zap, Lock } from 'lucide-react';
+import TrackToolVisit from '@/components/TrackToolVisit';
 
 interface ToolPageLayoutProps {
   title: string;
@@ -23,6 +24,7 @@ const ToolPageLayout: React.FC<ToolPageLayoutProps> = ({
 }) => {
   return (
     <div className="min-h-screen bg-[#050506] flex flex-col">
+      <TrackToolVisit />
       <Navbar />
 
       <main className="flex-grow">

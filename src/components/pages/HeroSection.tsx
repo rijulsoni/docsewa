@@ -1,7 +1,11 @@
+"use client"
+
 import React from 'react';
 import FileUploadZone from './FileUploadZone';
-import { ShieldCheck, Zap, EyeOff, Sparkles } from 'lucide-react';
+import { ShieldCheck, Zap, EyeOff, Sparkles, Search } from 'lucide-react';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
+import { useCommandPalette } from '@/components/CommandPalette';
+import { TOTAL_TOOLS } from '@/lib/tools-data';
 
 interface HeroSectionProps {
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -14,6 +18,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   onFileChange, onDrop, onDragOver, multiple = false,
 }) => {
   const { onOpen } = useUpgradeModal();
+  const { openPalette } = useCommandPalette();
 
   return (
     <section className="relative pt-8 sm:pt-12 pb-4 sm:pb-6 overflow-hidden">
@@ -55,10 +60,34 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             <span className="accent-gradient-text">your documents</span>
           </h1>
 
-          <p className="text-sm sm:text-[15px] text-white/45 max-w-lg mx-auto mb-6 sm:mb-8 leading-relaxed">
-            97 free tools for PDF, Word, Image, AI &amp; more.{' '}
-            <span className="text-white/65">Drop a file to instantly see every tool that works on it.</span>
+          <p className="text-sm sm:text-[15px] text-white/45 max-w-lg mx-auto mb-5 sm:mb-6 leading-relaxed">
+            {TOTAL_TOOLS} free tools for PDF, Word, Image, AI &amp; more.{' '}
+            <span className="text-white/65">Search what you need or drop a file to begin.</span>
           </p>
+
+          {/* Search bar — opens command palette */}
+          <button
+            type="button"
+            onClick={openPalette}
+            aria-label="Search all tools"
+            className="group w-full max-w-xl mx-auto mb-4 sm:mb-5 flex items-center gap-3 px-4 sm:px-5 h-12 sm:h-14 rounded-2xl border border-white/[0.10] bg-white/[0.04] hover:bg-white/[0.07] hover:border-white/[0.16] transition-all text-left shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-sm"
+          >
+            <Search className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-white/40 group-hover:text-white/60 shrink-0 transition-colors" />
+            <span className="flex-1 text-[13px] sm:text-sm text-white/40 group-hover:text-white/60 truncate transition-colors">
+              Search {TOTAL_TOOLS} tools — try &ldquo;compress&rdquo;, &ldquo;merge&rdquo;, &ldquo;sign&rdquo;…
+            </span>
+            <span className="hidden sm:inline-flex items-center gap-1">
+              <kbd className="inline-flex items-center justify-center px-1.5 h-5 rounded-md bg-white/[0.06] border border-white/[0.10] text-[10px] font-bold text-white/45">⌘</kbd>
+              <kbd className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-white/[0.06] border border-white/[0.10] text-[10px] font-bold text-white/45">K</kbd>
+            </span>
+          </button>
+
+          {/* OR divider */}
+          <div className="flex items-center gap-3 max-w-xl mx-auto mb-3 sm:mb-4">
+            <div className="flex-1 h-px bg-white/[0.06]" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/25">OR drop a file</span>
+            <div className="flex-1 h-px bg-white/[0.06]" />
+          </div>
 
           {/* Upload zone */}
           <FileUploadZone

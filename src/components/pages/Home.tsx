@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import HeroSection from './HeroSection';
+import RecentAndPopular from './RecentAndPopular';
 import FeaturesSection from './FeaturesSection';
 import HowItWorks from './HowItWorks';
 import ActionSelectionGrid from './ActionSelectionGrid';
@@ -58,6 +59,8 @@ const Home = () => {
           onDragOver={handleDragOver}
           multiple
         />
+
+        <RecentAndPopular />
 
         <FeaturesSection />
         <HowItWorks />
