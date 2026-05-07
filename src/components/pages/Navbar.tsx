@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Menu, X, FileText, ChevronDown,
-  LayoutDashboard, BadgeDollarSign, Search,
+  LayoutDashboard, BadgeDollarSign, Search, Edit3,
   // PDF
   FileImage, FileDown, Files, Scissors, RotateCw, Stamp, Hash, PanelTop,
   Crop, Minimize2, Layers, Tag, Lock, LockOpen, PenLine, ArrowUpDown, Trash2,
@@ -38,6 +38,12 @@ interface MegaSection {
 // ─── PDF Tools ────────────────────────────────────────────────────────────────
 
 const pdfSections: NavSection[] = [
+  {
+    heading: 'Editor',
+    tools: [
+      { href: '/pdf-editor',           label: 'PDF Editor',         icon: <Edit3 className="h-4 w-4" />,    badge: 'New' },
+    ],
+  },
   {
     heading: 'Convert',
     tools: [
@@ -304,7 +310,7 @@ const ToolLink: React.FC<{ tool: NavTool; pathname: string; compact?: boolean }>
       compact ? 'px-2.5 py-1.5' : 'px-3 py-2',
       pathname === tool.href
         ? 'bg-indigo-500/15 text-indigo-300 ring-1 ring-indigo-500/20'
-        : 'hover:bg-white/[0.06] text-white/60 hover:text-white'
+        : 'hover:bg-white/[0.06] text-white/80 hover:text-white'
     )}
   >
     <div className={cn(
@@ -379,7 +385,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
             <div className="space-y-3">
               {sections.map((section) => (
                 <div key={section.heading}>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/25 px-2.5 mb-1.5">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/55 px-2.5 mb-1.5">
                     {section.heading}
                   </p>
                   <div className="grid grid-cols-2 gap-0.5">
@@ -693,7 +699,7 @@ const Navbar = () => {
                 className="group relative h-10 px-4 rounded-full text-[13px] font-bold text-white whitespace-nowrap overflow-hidden bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 shadow-[0_12px_26px_rgba(124,58,237,0.30)] ring-1 ring-white/15 transition-all hover:-translate-y-px hover:shadow-[0_0_28px_rgba(139,92,246,0.45)] flex items-center gap-1.5"
               >
                 <Sparkles className="h-3.5 w-3.5 shrink-0" />
-                Go Pro
+                Upgrade to Pro
               </button>
 
               {/* Auth */}
@@ -711,14 +717,36 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            className="lg:hidden ml-auto h-10 w-10 rounded-full border border-white/[0.09] bg-white/[0.045] text-white/65 shadow-inner shadow-white/[0.02] hover:text-white hover:bg-white/[0.08] transition-all flex items-center justify-center"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          {/* Mobile right cluster: search + auth + menu */}
+          <div className="lg:hidden ml-auto flex items-center gap-2">
+            <button
+              onClick={openPalette}
+              aria-label="Search tools"
+              className="h-10 w-10 rounded-full border border-white/[0.09] bg-white/[0.045] text-white/65 shadow-inner shadow-white/[0.02] hover:text-white hover:bg-white/[0.08] transition-all flex items-center justify-center"
+            >
+              <Search className="h-4 w-4" />
+            </button>
+
+            {isSignedIn ? (
+              <div className="flex items-center justify-center h-10">
+                <UserButton />
+              </div>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="h-10 rounded-full border border-white/[0.13] bg-white/[0.055] px-4 text-[13px] font-semibold text-white/82 hover:border-white/[0.22] hover:bg-white/[0.09] hover:text-white transition-all whitespace-nowrap">
+                  Sign in
+                </button>
+              </SignInButton>
+            )}
+
+            <button
+              className="h-10 w-10 rounded-full border border-white/[0.09] bg-white/[0.045] text-white/65 shadow-inner shadow-white/[0.02] hover:text-white hover:bg-white/[0.08] transition-all flex items-center justify-center"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -730,7 +758,7 @@ const Navbar = () => {
               <div className="mb-3 flex items-center justify-between">
                 <div>
                   <p className="text-sm font-bold text-white">Menu</p>
-                  <p className="text-xs text-white/35">{totalTools} tools available</p>
+                  <p className="text-xs text-white/60">{totalTools} tools available</p>
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}
@@ -790,7 +818,7 @@ const Navbar = () => {
             </div>
             <div className="h-px bg-white/[0.06] my-2" />
             <div className="px-1 py-1">
-              <div className="mb-2 flex items-center gap-2 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/25">
+              <div className="mb-2 flex items-center gap-2 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
                 <Grid3X3 className="h-3 w-3" />
                 Browse categories
               </div>

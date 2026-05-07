@@ -156,11 +156,11 @@ const ToolGroup: React.FC<GroupProps> = ({ label, sublabel, accentClass, dotClas
   <div>
     <div className="flex items-center gap-3 mb-6">
       <span className={`w-2 h-2 rounded-full ${dotClass}`} />
-      <h3 className="text-sm font-semibold text-white/70">{label}</h3>
+      <h3 className="text-sm font-semibold text-white/85">{label}</h3>
       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${accentClass}`}>
         {tools.length} tools
       </span>
-      <div className="flex-1 h-px bg-white/[0.05]" />
+      <div className="flex-1 h-px bg-white/[0.08]" />
     </div>
 
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -178,7 +178,7 @@ const ToolGroup: React.FC<GroupProps> = ({ label, sublabel, accentClass, dotClas
       ))}
     </div>
 
-    <p className="text-xs text-white/20 mt-4">{sublabel}</p>
+    <p className="text-xs text-white/45 mt-4">{sublabel}</p>
   </div>
 );
 
@@ -223,7 +223,7 @@ const FeaturesSection: React.FC = () => {
           <h2 className="text-3xl md:text-5xl font-extrabold gradient-text leading-tight mb-4">
             Everything for your documents
           </h2>
-          <p className="text-white/40 max-w-md mx-auto text-base">
+          <p className="text-white/65 max-w-md mx-auto text-base">
             97 professional tools — PDF, Word, Excel, Image, Text, Dev, AI &amp; more, all free, all private
           </p>
         </div>

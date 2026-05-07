@@ -1,8 +1,8 @@
 "use client"
 import React, { useState, useCallback } from 'react';
 import ToolPageLayout from '@/components/pages/ToolPageLayout';
-import { Pipette, Copy } from 'lucide-react';
-import { toast } from 'sonner';
+import { Pipette } from 'lucide-react';
+import { Section, Swatch, CopyButton } from '@/components/tool-ui';
 
 // ── Conversion helpers ────────────────────────────────────────────────────────
 
@@ -58,6 +58,12 @@ function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: n
   };
 }
 
+const SWATCHES = [
+  '#ec4899', '#f43f5e', '#f97316', '#eab308',
+  '#22c55e', '#06b6d4', '#6366f1', '#8b5cf6',
+  '#ffffff', '#94a3b8', '#334155', '#0f172a',
+];
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function ColorConverterPage() {
@@ -104,11 +110,6 @@ export default function ColorConverterPage() {
     setPreviewColor(hexVal);
   }, []);
 
-  const copy = (value: string, label: string) => {
-    navigator.clipboard.writeText(value);
-    toast.success(`Copied ${label}!`);
-  };
-
   const rows = [
     { label: 'HEX',  placeholder: '#rrggbb',    value: hex,  onChange: updateFromHex,  display: hex },
     { label: 'RGB',  placeholder: 'r, g, b',    value: rgb,  onChange: updateFromRgb,  display: `rgb(${rgb})` },
@@ -132,63 +133,53 @@ export default function ColorConverterPage() {
     >
       <div className="space-y-4">
         {/* Color preview */}
-        <div className="glass-card rounded-2xl p-5 flex items-center gap-5">
-          <div
-            className="w-20 h-20 rounded-xl shrink-0 border border-white/[0.08] shadow-lg transition-all duration-300"
-            style={{ background: previewColor }}
-          />
-          <div>
-            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-1">Preview</p>
-            <p className="text-white/70 font-mono text-sm">{previewColor.toUpperCase()}</p>
-            <p className="text-white/30 text-xs mt-0.5">rgb({rgb})</p>
+        <Section padding={6}>
+          <div className="flex items-center gap-5">
+            <div
+              className="w-20 h-20 rounded-2xl shrink-0 border border-white/[0.10] shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.20)] transition-colors duration-200"
+              style={{ background: previewColor }}
+            />
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40 mb-1">Preview</p>
+              <p className="text-white/90 font-mono text-lg font-semibold">{previewColor.toUpperCase()}</p>
+              <p className="text-white/35 text-xs mt-0.5 font-mono">rgb({rgb})</p>
+            </div>
           </div>
-        </div>
+        </Section>
 
         {/* Input rows */}
-        <div className="glass-card rounded-2xl p-5 space-y-4">
-          <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Color Values</p>
-          {rows.map(({ label, placeholder, value, onChange, display }) => (
-            <div key={label} className="flex items-center gap-3">
-              <span className="text-xs font-bold text-white/30 w-8 shrink-0">{label}</span>
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder={placeholder}
-                className="flex-grow bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white/70 placeholder:text-white/20 focus:outline-none focus:border-pink-500/40 font-mono"
-              />
-              <button
-                onClick={() => copy(display, label)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-white/[0.08] text-white/40 hover:text-pink-300 hover:border-pink-500/40 hover:bg-pink-500/5 transition-all shrink-0"
-              >
-                <Copy className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ))}
-        </div>
+        <Section title="Color values">
+          <div className="space-y-2.5">
+            {rows.map(({ label, placeholder, value, onChange, display }) => (
+              <div key={label} className="flex items-center gap-3">
+                <span className="text-[11px] font-bold text-white/40 w-10 shrink-0 uppercase tracking-[0.12em]">{label}</span>
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder={placeholder}
+                  className="flex-grow bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white/85 placeholder:text-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500/30 focus:border-pink-500/40 font-mono transition-all min-w-0"
+                />
+                <CopyButton value={display} label={label} size="md" />
+              </div>
+            ))}
+          </div>
+        </Section>
 
         {/* Quick swatches */}
-        <div className="glass-card rounded-2xl p-5 space-y-3">
-          <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Quick Swatches</p>
+        <Section title="Quick swatches" description="Tap a color to load it">
           <div className="flex flex-wrap gap-2">
-            {[
-              '#ec4899', '#f43f5e', '#f97316', '#eab308',
-              '#22c55e', '#06b6d4', '#6366f1', '#8b5cf6',
-              '#ffffff', '#94a3b8', '#334155', '#0f172a',
-            ].map((c) => (
-              <button
+            {SWATCHES.map((c) => (
+              <Swatch
                 key={c}
-                title={c}
+                color={c}
+                active={previewColor.toLowerCase() === c.toLowerCase()}
                 onClick={() => updateFromHex(c)}
-                className="w-8 h-8 rounded-lg border-2 transition-all hover:scale-110"
-                style={{
-                  background: c,
-                  borderColor: previewColor === c ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.08)',
-                }}
+                size="md"
               />
             ))}
           </div>
-        </div>
+        </Section>
       </div>
     </ToolPageLayout>
   );

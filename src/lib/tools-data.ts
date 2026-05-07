@@ -4,10 +4,11 @@ import {
   ArrowUpDown, Minimize2, Layers, Crop, PanelTop, Tag, Lock, LockOpen, PenLine,
   Sparkles, Languages,
   Code, FileOutput, ImageIcon, FileCode, BarChart3, FilePlus, Replace, Search,
+  Edit3,
   Repeat2, Wand2, SlidersHorizontal, ZoomIn, ScanText, Scaling,
   FlipHorizontal2, Palette, Film, Pipette, Globe, Square,
   Table2, FileSpreadsheet, Braces, FilePlus2, FileJson, GitCompare,
-  CaseSensitive, AlignLeft, AlignCenter, LinkIcon, Filter, Type, Shuffle, Terminal,
+  CaseSensitive, AlignLeft, AlignCenter, LinkIcon, Filter, Type, Shuffle,
   Key, Fingerprint, Binary, Clock, KeyRound, Code2,
   Landmark, TrendingUp, Percent, Calendar, CalendarDays, Briefcase,
   Paintbrush, Ruler, Activity, QrCode,
@@ -54,7 +55,8 @@ export interface ToolEntry {
 }
 
 export const TOOLS: ToolEntry[] = [
-  // ── PDF (20) ────────────────────────────────────────────────────────
+  // ── PDF (21) ────────────────────────────────────────────────────────
+  { slug: 'pdf-editor', href: '/pdf-editor', title: 'PDF Editor', description: 'Open any PDF and edit it visually — add text, draw, sign, whiteout, insert images, more. All in one place.', category: 'pdf', icon: Edit3, iconBg: 'from-indigo-500 to-violet-600', badge: 'New', popular: true, keywords: ['edit pdf', 'annotate', 'sign', 'whiteout', 'add text to pdf', 'mark up'] },
   { slug: 'image-to-pdf', href: '/image-to-pdf', title: 'Image to PDF', description: 'Convert JPG, PNG and WebP images into a polished, print-ready PDF.', category: 'pdf', icon: FileImage, iconBg: 'from-blue-500 to-blue-600', badge: 'Popular', popular: true, keywords: ['jpg', 'png', 'webp', 'photo', 'picture', 'convert image'] },
   { slug: 'pdf-to-image', href: '/pdf-to-image', title: 'PDF to Image', description: 'Render any PDF page as a high-resolution PNG or JPG in your browser.', category: 'pdf', icon: FileDown, iconBg: 'from-violet-500 to-purple-600', popular: true, keywords: ['png', 'jpg', 'export'] },
   { slug: 'merge-pdf', href: '/merge-pdf', title: 'Merge PDF', description: 'Combine multiple PDFs into one. Drag to reorder pages before merging.', category: 'pdf', icon: Files, iconBg: 'from-emerald-500 to-teal-600', popular: true, keywords: ['combine', 'join', 'concatenate'] },

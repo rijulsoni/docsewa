@@ -40,7 +40,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* Badge & Pro Link */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-5 sm:mb-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.09] bg-white/[0.04] text-[11px] sm:text-xs text-white/50 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.10] bg-white/[0.05] text-[11px] sm:text-xs text-white/75 font-medium backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Free · No sign-up · No data stored
             </div>
@@ -60,9 +60,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             <span className="accent-gradient-text">your documents</span>
           </h1>
 
-          <p className="text-sm sm:text-[15px] text-white/45 max-w-lg mx-auto mb-5 sm:mb-6 leading-relaxed">
+          <p className="text-sm sm:text-[15px] text-white/65 max-w-lg mx-auto mb-5 sm:mb-6 leading-relaxed">
             {TOTAL_TOOLS} free tools for PDF, Word, Image, AI &amp; more.{' '}
-            <span className="text-white/65">Search what you need or drop a file to begin.</span>
+            <span className="text-white/85 font-medium">Search what you need or drop a file to begin.</span>
           </p>
 
           {/* Search bar — opens command palette */}
@@ -72,8 +72,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             aria-label="Search all tools"
             className="group w-full max-w-xl mx-auto mb-4 sm:mb-5 flex items-center gap-3 px-4 sm:px-5 h-12 sm:h-14 rounded-2xl border border-white/[0.10] bg-white/[0.04] hover:bg-white/[0.07] hover:border-white/[0.16] transition-all text-left shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-sm"
           >
-            <Search className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-white/40 group-hover:text-white/60 shrink-0 transition-colors" />
-            <span className="flex-1 text-[13px] sm:text-sm text-white/40 group-hover:text-white/60 truncate transition-colors">
+            <Search className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-white/55 group-hover:text-white shrink-0 transition-colors" />
+            <span className="flex-1 text-[13px] sm:text-sm text-white/65 group-hover:text-white truncate transition-colors">
               Search {TOTAL_TOOLS} tools — try &ldquo;compress&rdquo;, &ldquo;merge&rdquo;, &ldquo;sign&rdquo;…
             </span>
             <span className="hidden sm:inline-flex items-center gap-1">
@@ -84,9 +84,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* OR divider */}
           <div className="flex items-center gap-3 max-w-xl mx-auto mb-3 sm:mb-4">
-            <div className="flex-1 h-px bg-white/[0.06]" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/25">OR drop a file</span>
-            <div className="flex-1 h-px bg-white/[0.06]" />
+            <div className="flex-1 h-px bg-white/[0.08]" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">OR drop a file</span>
+            <div className="flex-1 h-px bg-white/[0.08]" />
           </div>
 
           {/* Upload zone */}
@@ -98,17 +98,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           />
 
           {/* Trust row */}
-          <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 sm:gap-5 mt-4 sm:mt-5 text-[10px] sm:text-[11px] text-white/30">
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 sm:gap-5 mt-4 sm:mt-5 text-[10px] sm:text-[11px] text-white/55 font-medium">
             <span className="flex items-center gap-1.5">
-              <EyeOff className="h-3.5 w-3.5 text-indigo-400/70" />
+              <EyeOff className="h-3.5 w-3.5 text-indigo-300" />
               Client-side only
             </span>
             <span className="flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-violet-400/70" />
+              <ShieldCheck className="h-3.5 w-3.5 text-violet-300" />
               Files never uploaded
             </span>
             <span className="flex items-center gap-1.5">
-              <Zap className="h-3.5 w-3.5 text-emerald-400/70" />
+              <Zap className="h-3.5 w-3.5 text-emerald-300" />
               Instant results
             </span>
           </div>

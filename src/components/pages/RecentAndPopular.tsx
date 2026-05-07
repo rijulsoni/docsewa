@@ -63,12 +63,12 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ icon, title, subtitle, ac
   <div className="flex items-end justify-between gap-4 mb-4 sm:mb-5">
     <div>
       <div className="flex items-center gap-2 mb-1">
-        <div className="w-6 h-6 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center">
+        <div className="w-6 h-6 rounded-lg bg-white/[0.06] border border-white/[0.10] flex items-center justify-center">
           {icon}
         </div>
-        <h2 className="text-base sm:text-lg font-bold text-white/85 tracking-tight">{title}</h2>
+        <h2 className="text-base sm:text-lg font-bold text-white/95 tracking-tight">{title}</h2>
       </div>
-      <p className="text-[11px] sm:text-xs text-white/35 ml-8">{subtitle}</p>
+      <p className="text-[11px] sm:text-xs text-white/55 ml-8">{subtitle}</p>
     </div>
     {action}
   </div>
@@ -109,8 +109,8 @@ const ToolStrip: React.FC<{ tools: ToolEntry[] }> = ({ tools }) => (
             )}
           </div>
           <div>
-            <p className="text-[12.5px] font-semibold text-white/82 group-hover:text-white truncate">{tool.title}</p>
-            <p className={cn('text-[10px] mt-0.5 truncate', cat.text, 'opacity-60')}>{cat.label}</p>
+            <p className="text-[12.5px] font-semibold text-white/95 group-hover:text-white truncate">{tool.title}</p>
+            <p className={cn('text-[10px] mt-0.5 truncate font-semibold', cat.text)}>{cat.label}</p>
           </div>
         </Link>
       );

@@ -3,8 +3,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import ToolPageLayout from '@/components/pages/ToolPageLayout';
 import { QrCode, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  Section, Slider, SegmentedControl, ColorField, EmptyState,
+} from '@/components/tool-ui';
 
 type ECLevel = 'L' | 'M' | 'Q' | 'H';
+
+const ACCENT = '#fbbf24'; // amber-400
 
 export default function QrGeneratorPage() {
   const [text, setText]       = useState('');
@@ -77,96 +82,87 @@ export default function QrGeneratorPage() {
     >
       <div className="space-y-4">
         {/* Content input */}
-        <div className="glass-card rounded-2xl p-5 space-y-2">
-          <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Content</p>
+        <Section title="Content">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="https://example.com or any text…"
             rows={3}
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white/70 placeholder:text-white/20 focus:outline-none focus:border-yellow-500/40 resize-none"
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white/85 placeholder:text-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/30 focus:border-amber-400/40 resize-none transition-all"
           />
-        </div>
+        </Section>
 
-        {/* Options */}
-        <div className="glass-card rounded-2xl p-5 space-y-4">
-          {/* Size */}
-          <div>
-            <div className="flex justify-between mb-2">
-              <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Size</p>
-              <p className="text-xs font-semibold text-yellow-300">{size} × {size} px</p>
-            </div>
-            <input type="range" min={128} max={512} step={32} value={size}
-              onChange={(e) => setSize(Number(e.target.value))}
-              className="w-full accent-yellow-500" />
-            <div className="flex justify-between text-[10px] text-white/20 mt-1">
-              <span>128 px</span><span>512 px</span>
-            </div>
+        {/* Size */}
+        <Section
+          title="Size"
+          valueRight={
+            <span className="text-[11px] font-semibold font-mono px-2 py-0.5 rounded-md bg-amber-400/10 text-amber-300 border border-amber-400/20">
+              {size} × {size}px
+            </span>
+          }
+        >
+          <Slider value={size} min={128} max={512} step={32} onChange={setSize} accent={ACCENT} ariaLabel="QR code size" />
+          <div className="flex justify-between text-[10px] text-white/25 mt-2 font-mono">
+            <span>128px</span><span>512px</span>
           </div>
+        </Section>
 
-          {/* Error correction */}
-          <div>
-            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Error Correction</p>
-            <div className="flex gap-2">
-              {(['L', 'M', 'Q', 'H'] as ECLevel[]).map((level) => (
-                <button key={level} onClick={() => setEcLevel(level)}
-                  className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all border ${
-                    ecLevel === level
-                      ? 'bg-yellow-500/10 border-yellow-500/40 text-yellow-300'
-                      : 'border-white/[0.08] text-white/40 hover:text-white/70 hover:bg-white/[0.04]'
-                  }`}>{level}</button>
-              ))}
-            </div>
-            <p className="text-[10px] text-white/20 mt-1.5">
-              L=7% · M=15% · Q=25% · H=30% damage recovery
-            </p>
+        {/* Error correction */}
+        <Section
+          title="Error correction"
+          description="L=7% · M=15% · Q=25% · H=30% damage recovery"
+        >
+          <SegmentedControl
+            value={ecLevel}
+            onChange={setEcLevel}
+            accent={ACCENT}
+            fluid
+            options={[
+              { value: 'L', label: 'L' },
+              { value: 'M', label: 'M' },
+              { value: 'Q', label: 'Q' },
+              { value: 'H', label: 'H' },
+            ]}
+          />
+        </Section>
+
+        {/* Colors */}
+        <Section title="Colors">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <ColorField label="Foreground" value={fg} onChange={setFg} />
+            <ColorField label="Background" value={bg} onChange={setBg} />
           </div>
+        </Section>
 
-          {/* Colors */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Foreground</p>
-              <div className="flex items-center gap-2">
-                <input type="color" value={fg} onChange={(e) => setFg(e.target.value)}
-                  className="w-10 h-9 rounded-lg border border-white/[0.08] bg-transparent cursor-pointer p-0.5" />
-                <span className="text-xs text-white/40 font-mono">{fg}</span>
+        {/* Output */}
+        {text.trim() ? (
+          <Section title="Preview" padding={6}>
+            <div className="flex flex-col items-center gap-5">
+              <div className="rounded-xl overflow-hidden p-3 shadow-[0_8px_30px_rgba(0,0,0,0.4)]" style={{ background: bg }}>
+                <canvas ref={canvasRef} className="block rounded-lg" />
+              </div>
+              <div className="flex gap-3 w-full">
+                <button
+                  onClick={downloadPng}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-amber-400 hover:bg-amber-300 text-black text-sm font-semibold rounded-xl transition-all shadow-[0_4px_16px_rgba(251,191,36,0.3)]"
+                >
+                  <Download className="h-4 w-4" /> Download PNG
+                </button>
+                <button
+                  onClick={downloadSvg}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 border border-white/[0.12] hover:bg-white/[0.05] text-white/75 hover:text-white text-sm font-semibold rounded-xl transition-all"
+                >
+                  <Download className="h-4 w-4" /> Download SVG
+                </button>
               </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Background</p>
-              <div className="flex items-center gap-2">
-                <input type="color" value={bg} onChange={(e) => setBg(e.target.value)}
-                  className="w-10 h-9 rounded-lg border border-white/[0.08] bg-transparent cursor-pointer p-0.5" />
-                <span className="text-xs text-white/40 font-mono">{bg}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* QR preview */}
-        {text.trim() && (
-          <div className="glass-card rounded-2xl p-5 flex flex-col items-center gap-4">
-            <div className="rounded-xl overflow-hidden p-2" style={{ background: bg }}>
-              <canvas ref={canvasRef} className="block rounded-lg" />
-            </div>
-            <div className="flex gap-3 w-full">
-              <button onClick={downloadPng}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black text-sm font-semibold rounded-xl transition-all shadow-[0_4px_16px_rgba(251,191,36,0.3)]">
-                <Download className="h-4 w-4" /> PNG
-              </button>
-              <button onClick={downloadSvg}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 border border-white/[0.12] hover:bg-white/[0.05] text-white/70 hover:text-white text-sm font-semibold rounded-xl transition-all">
-                <Download className="h-4 w-4" /> SVG
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!text.trim() && (
-          <div className="flex items-center justify-center gap-3 py-8 text-white/20">
-            <QrCode className="h-6 w-6" />
-            <p className="text-sm">Type something above to generate a QR code</p>
-          </div>
+          </Section>
+        ) : (
+          <EmptyState
+            icon={<QrCode className="h-5 w-5" />}
+            title="Type something above to generate a QR code"
+            subtitle="Paste a URL, Wi-Fi credentials, plain text — anything you want to share."
+          />
         )}
       </div>
     </ToolPageLayout>

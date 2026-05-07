@@ -17,9 +17,9 @@ interface UploadDropzoneProps {
 }
 
 const ICONS = {
-  file:   <FileText className="h-8 w-8" />,
-  image:  <FileImage className="h-8 w-8" />,
-  upload: <Upload className="h-8 w-8" />,
+  file:   <FileText className="h-6 w-6" />,
+  image:  <FileImage className="h-6 w-6" />,
+  upload: <Upload className="h-6 w-6" />,
 };
 
 const UploadDropzone: React.FC<UploadDropzoneProps> = ({
@@ -48,7 +48,7 @@ const UploadDropzone: React.FC<UploadDropzoneProps> = ({
       onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setIsDrag(false); }}
       className={cn(
         'group relative flex flex-col items-center justify-center w-full cursor-pointer',
-        'border-2 border-dashed rounded-2xl px-8 py-14 text-center',
+        'border-2 border-dashed rounded-2xl px-6 py-10 text-center',
         'transition-all duration-300 select-none overflow-hidden',
         isDrag ? accentClass : 'border-white/[0.08] bg-white/[0.02] hover:border-white/[0.16] hover:bg-white/[0.04]'
       )}
@@ -69,30 +69,36 @@ const UploadDropzone: React.FC<UploadDropzoneProps> = ({
 
       {/* Icon */}
       <div className={cn(
-        'w-20 h-20 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300',
+        'w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-all duration-300',
         isDrag ? 'scale-110' : 'group-hover:scale-105',
         'bg-white/[0.04] border border-white/[0.06]'
       )}>
         <span className={cn('transition-all duration-300', isDrag ? 'text-indigo-300' : 'text-white/25 group-hover:text-white/40')}>
-          {isDrag ? <Sparkles className="h-8 w-8" /> : ICONS[icon]}
+          {isDrag ? <Sparkles className="h-6 w-6" /> : ICONS[icon]}
         </span>
       </div>
 
-      <p className={cn('text-lg font-semibold mb-1.5 transition-colors', isDrag ? 'text-white/90' : 'text-white/55 group-hover:text-white/70')}>
+      <p className={cn('text-base font-bold mb-1 transition-colors', isDrag ? 'text-white' : 'text-white/85 group-hover:text-white')}>
         {isDrag ? `Drop your ${fileLabel} here` : `Upload your ${fileLabel}`}
       </p>
 
-      <p className="text-sm text-white/30 mb-8 max-w-xs leading-relaxed">
+      <p className="text-[13px] text-white/55 mb-5 max-w-xs leading-relaxed">
         {hint ?? `Drag & drop or click to browse${multiple ? ' — multiple files OK' : ''}`}
       </p>
 
       <div className={cn(
-        'inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-200',
+        'inline-flex items-center gap-2 px-5 py-2 rounded-xl text-white text-sm font-semibold transition-all duration-200',
         buttonClass
       )}>
         <Upload className="h-4 w-4" />
         Choose {multiple ? 'Files' : 'File'}
       </div>
+
+      {accept && accept !== '*' && (
+        <p className="mt-3 text-[10.5px] text-white/45 font-mono">
+          Accepts: <span className="text-white/70">{accept}</span>
+        </p>
+      )}
     </label>
   );
 };

@@ -1,8 +1,10 @@
 "use client"
 import React, { useState, useCallback } from 'react';
 import ToolPageLayout from '@/components/pages/ToolPageLayout';
-import { Paintbrush, Copy, Plus, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { Paintbrush, Plus, Trash2 } from 'lucide-react';
+import {
+  Section, Slider, SegmentedControl, ColorField, CopyButton,
+} from '@/components/tool-ui';
 
 type GradientType = 'linear' | 'radial';
 
@@ -10,6 +12,8 @@ interface ColorStop {
   id: number;
   color: string;
 }
+
+const ACCENT = '#a855f7'; // purple-500
 
 let nextId = 3;
 
@@ -51,11 +55,6 @@ export default function GradientGeneratorPage() {
     setStops((prev) => prev.filter((s) => s.id !== id));
   };
 
-  const copy = () => {
-    navigator.clipboard.writeText(buildCSS());
-    toast.success('CSS copied to clipboard!');
-  };
-
   const cssOutput = buildCSS();
 
   return (
@@ -75,113 +74,92 @@ export default function GradientGeneratorPage() {
     >
       <div className="space-y-4">
         {/* Type toggle */}
-        <div className="glass-card rounded-2xl p-5 space-y-3">
-          <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Gradient Type</p>
-          <div className="flex gap-2">
-            {(['linear', 'radial'] as GradientType[]).map((t) => (
-              <button
-                key={t}
-                onClick={() => setGradientType(t)}
-                className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all border capitalize ${
-                  gradientType === t
-                    ? 'bg-purple-500/10 border-purple-500/40 text-purple-300'
-                    : 'border-white/[0.08] text-white/50 hover:text-white/80 hover:bg-white/[0.04]'
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Section title="Gradient type">
+          <SegmentedControl
+            value={gradientType}
+            onChange={setGradientType}
+            accent={ACCENT}
+            options={[
+              { value: 'linear', label: 'Linear' },
+              { value: 'radial', label: 'Radial' },
+            ]}
+          />
+        </Section>
 
         {/* Color stops */}
-        <div className="glass-card rounded-2xl p-5 space-y-3">
-          <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Color Stops</p>
+        <Section
+          title="Color stops"
+          valueRight={
+            <span className="text-[11px] font-semibold font-mono px-2 py-0.5 rounded-md bg-white/[0.04] text-white/55 border border-white/[0.08]">
+              {stops.length} / 3
+            </span>
+          }
+        >
           <div className="space-y-2">
             {stops.map((stop, idx) => (
-              <div key={stop.id} className="flex items-center gap-3">
-                <span className="text-xs text-white/30 w-14 shrink-0">Stop {idx + 1}</span>
-                <div className="relative shrink-0">
-                  <div
-                    className="w-10 h-10 rounded-xl border border-white/[0.12] shadow-sm overflow-hidden"
-                    style={{ background: stop.color }}
-                  />
-                  <input
-                    type="color"
-                    value={stop.color}
-                    onChange={(e) => updateColor(stop.id, e.target.value)}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                  />
-                </div>
-                <span className="text-sm text-white/50 font-mono">{stop.color}</span>
-                <button
-                  onClick={() => removeStop(stop.id)}
-                  disabled={stops.length <= 2}
-                  className="ml-auto p-1.5 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-0 disabled:pointer-events-none"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
+              <ColorField
+                key={stop.id}
+                label={`Stop ${idx + 1}`}
+                value={stop.color}
+                onChange={(color) => updateColor(stop.id, color)}
+                trailing={
+                  stops.length > 2 ? (
+                    <button
+                      onClick={() => removeStop(stop.id)}
+                      aria-label="Remove color stop"
+                      className="p-1.5 rounded-lg text-white/25 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  ) : undefined
+                }
+              />
             ))}
           </div>
           {stops.length < 3 && (
             <button
               onClick={addStop}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border border-dashed border-white/[0.12] text-white/30 hover:text-purple-300 hover:border-purple-500/30 hover:bg-purple-500/5 transition-all"
+              className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border border-dashed border-white/[0.12] text-white/35 hover:text-purple-300 hover:border-purple-500/30 hover:bg-purple-500/[0.06] transition-all"
             >
               <Plus className="h-3.5 w-3.5" /> Add 3rd color stop
             </button>
           )}
-        </div>
+        </Section>
 
         {/* Angle slider — linear only */}
         {gradientType === 'linear' && (
-          <div className="glass-card rounded-2xl p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Angle</p>
-              <span className="text-sm font-mono text-purple-300">{angle}°</span>
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={360}
-              value={angle}
-              onChange={(e) => setAngle(Number(e.target.value))}
-              className="w-full accent-purple-500 cursor-pointer"
-            />
-            <div className="flex justify-between text-[10px] text-white/20">
+          <Section
+            title="Angle"
+            valueRight={
+              <span className="text-[11px] font-semibold font-mono px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                {angle}°
+              </span>
+            }
+          >
+            <Slider value={angle} min={0} max={360} onChange={setAngle} accent={ACCENT} ariaLabel="Gradient angle" />
+            <div className="flex justify-between text-[10px] text-white/25 mt-2 font-mono">
               <span>0°</span><span>90°</span><span>180°</span><span>270°</span><span>360°</span>
             </div>
-          </div>
+          </Section>
         )}
 
         {/* Live preview */}
-        <div className="glass-card rounded-2xl p-5 space-y-3">
-          <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Preview</p>
+        <Section title="Preview">
           <div
-            className="w-full h-48 rounded-xl border border-white/[0.08]"
+            className="w-full h-48 rounded-xl border border-white/[0.10] shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_8px_30px_rgba(0,0,0,0.35)]"
             style={gradientStyle()}
           />
-        </div>
+        </Section>
 
         {/* CSS output */}
-        <div className="glass-card rounded-2xl p-5 space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">CSS Output</p>
-            <button
-              onClick={copy}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/[0.08] text-white/40 hover:text-purple-300 hover:border-purple-500/40 hover:bg-purple-500/5 transition-all"
-            >
-              <Copy className="h-3.5 w-3.5" /> Copy
-            </button>
-          </div>
-          <textarea
-            value={cssOutput}
-            readOnly
-            rows={3}
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white/70 font-mono focus:outline-none resize-none select-all"
-          />
-        </div>
+        <Section
+          title="CSS output"
+          action={<CopyButton value={cssOutput} label="CSS" withText />}
+        >
+          <pre className="w-full bg-black/30 border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-purple-200 font-mono overflow-x-auto select-all">
+            <code>{cssOutput}</code>
+          </pre>
+        </Section>
       </div>
     </ToolPageLayout>
   );

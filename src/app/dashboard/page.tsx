@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import Navbar from "@/components/pages/Navbar";
@@ -23,24 +23,45 @@ export default async function DashboardPage() {
   }
 
   // Fetch user data
-  const user = await db.user.findUnique({
-    where: { clerkId: userId },
-    include: {
-      usages: {
-        where: {
-          date: {
-            gte: new Date(new Date().setHours(0, 0, 0, 0)),
-          },
+  const userInclude = {
+    usages: {
+      where: {
+        date: {
+          gte: new Date(new Date().setHours(0, 0, 0, 0)),
         },
       },
-      history: {
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      },
     },
+    history: {
+      orderBy: { createdAt: "desc" as const },
+      take: 10,
+    },
+  };
+
+  let user = await db.user.findUnique({
+    where: { clerkId: userId },
+    include: userInclude,
   });
 
-  // Fallback if webhook hasn't created the user yet
+  // Local dev may not receive Clerk webhooks, so create the app user on demand.
+  if (!user) {
+    const clerkUser = await currentUser();
+    const email =
+      clerkUser?.primaryEmailAddress?.emailAddress ??
+      clerkUser?.emailAddresses[0]?.emailAddress;
+
+    if (email) {
+      user = await db.user.upsert({
+        where: { clerkId: userId },
+        update: { email },
+        create: {
+          clerkId: userId,
+          email,
+        },
+        include: userInclude,
+      });
+    }
+  }
+
   if (!user) {
     return (
       <div className="min-h-screen bg-[#050506] flex flex-col">
