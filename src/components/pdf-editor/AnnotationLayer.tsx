@@ -6,6 +6,7 @@ import type { Annotation, Tool, Point } from './types';
 import { AnnotationItem, AnnotationVisual } from './AnnotationItem';
 import { SelectionHandles } from './SelectionHandles';
 import { clamp } from './utils/coordinates';
+import { cn } from '@/lib/utils';
 
 const DRAG_THRESHOLD = 4; // PDF points
 
@@ -30,18 +31,26 @@ function buildAnnotation(
   switch (tool) {
     case 'whiteout':
       return { type: 'whiteout', id, pageIndex, x, y, w, h };
+    case 'redact':
+      return { type: 'redaction', id, pageIndex, x, y, w, h };
     case 'text':
       return {
         type: 'text', id, pageIndex,
         x, y, w: Math.max(w, 120), h: Math.max(h, 28),
-        text: '', fontSize: 16, color: '#111111',
+        text: '', fontSize: 16, color: '#111111', fontFamily: 'helvetica', background: null, backgroundOpacity: 0.85,
       };
     case 'rectangle':
       return { type: 'shape', id, pageIndex, x, y, w, h, shape: 'rectangle', stroke: '#ef4444', strokeWidth: 2, fill: null };
     case 'ellipse':
       return { type: 'shape', id, pageIndex, x, y, w, h, shape: 'ellipse', stroke: '#ef4444', strokeWidth: 2, fill: null };
+    case 'line':
+      return { type: 'shape', id, pageIndex, x, y, w, h, shape: 'line', stroke: '#ef4444', strokeWidth: 2 };
     case 'arrow':
       return { type: 'shape', id, pageIndex, x, y, w, h, shape: 'arrow', stroke: '#ef4444', strokeWidth: 2 };
+    case 'check':
+      return { type: 'mark', id, pageIndex, x, y, w: Math.max(w, 20), h: Math.max(h, 20), mark: 'check', color: '#16a34a', strokeWidth: 3 };
+    case 'cross':
+      return { type: 'mark', id, pageIndex, x, y, w: Math.max(w, 20), h: Math.max(h, 20), mark: 'cross', color: '#dc2626', strokeWidth: 3 };
     case 'pen':
       return drawPath
         ? { type: 'draw', id, pageIndex, x, y, w, h, mode: 'pen', path: drawPath, stroke: '#1d4ed8', strokeWidth: 2, opacity: 1 }
@@ -58,6 +67,17 @@ function buildAnnotation(
       return imageData
         ? { type: 'image', id, pageIndex, x, y, w, h, src: imageData.src, mime: imageData.mime }
         : null;
+    case 'note':
+      return {
+        type: 'note', id, pageIndex,
+        x, y,
+        w: Math.max(w, 140),
+        h: Math.max(h, 90),
+        text: '',
+        background: '#fef3c7',
+        color: '#451a03',
+        fontSize: 13,
+      };
     default:
       return null;
   }
@@ -68,6 +88,7 @@ interface DragRect {
   startY: number;
   endX: number;
   endY: number;
+  shiftKey: boolean;
 }
 
 interface DrawState {
@@ -88,8 +109,10 @@ export const AnnotationLayer: React.FC<Props> = ({ pageIndex, pageWidth, pageHei
   const [dragRect, setDragRect] = useState<DragRect | null>(null);
   const [drawState, setDrawState] = useState<DrawState | null>(null);
 
-  const pageAnns = Object.values(annotations).filter((a) => a.pageIndex === pageIndex);
-  const isCreationTool = tool !== 'select' && tool !== 'image' && tool !== 'signature';
+  const pageAnns = Object.values(annotations)
+    .filter((a) => a.pageIndex === pageIndex)
+    .sort((a, b) => (a.zIndex ?? 0) - (b.zIndex ?? 0) || a.id.localeCompare(b.id));
+  const isCreationTool = tool !== 'select' && tool !== 'image' && tool !== 'signature' && tool !== 'stamp';
   const isDrawTool = tool === 'pen' || tool === 'highlighter';
 
   const layerCoords = (e: React.PointerEvent): { x: number; y: number } => {
@@ -113,7 +136,7 @@ export const AnnotationLayer: React.FC<Props> = ({ pageIndex, pageWidth, pageHei
     if (isDrawTool) {
       setDrawState({ path: [[0, 0]], minX: x, minY: y, maxX: x, maxY: y });
     } else {
-      setDragRect({ startX: x, startY: y, endX: x, endY: y });
+      setDragRect({ startX: x, startY: y, endX: x, endY: y, shiftKey: e.shiftKey });
     }
   };
 
@@ -131,8 +154,42 @@ export const AnnotationLayer: React.FC<Props> = ({ pageIndex, pageWidth, pageHei
     }
     if (dragRect) {
       const { x, y } = layerCoords(e);
-      setDragRect({ ...dragRect, endX: x, endY: y });
+      setDragRect({ ...dragRect, endX: x, endY: y, shiftKey: e.shiftKey });
     }
+  };
+
+  /** Apply Shift-constrain to a draft rect:
+   *  - shapes/whiteout/text/image/redact: equal w & h (square / circle)
+   *  - line/arrow: snap to nearest axis or 45°
+   */
+  const constrainRect = (r: DragRect, t: Tool): DragRect => {
+    if (!r.shiftKey) return r;
+    const dx = r.endX - r.startX;
+    const dy = r.endY - r.startY;
+    if (t === 'line' || t === 'arrow') {
+      const adx = Math.abs(dx);
+      const ady = Math.abs(dy);
+      const ratio = Math.min(adx, ady) / Math.max(adx, ady || 1);
+      if (ratio < 0.4) {
+        // Snap to dominant axis
+        if (adx > ady) return { ...r, endY: r.startY };
+        return { ...r, endX: r.startX };
+      }
+      // Snap to 45°: equalize abs dx/dy preserving sign
+      const m = Math.max(adx, ady);
+      return {
+        ...r,
+        endX: r.startX + Math.sign(dx) * m,
+        endY: r.startY + Math.sign(dy) * m,
+      };
+    }
+    // Square/circle: equal magnitudes
+    const m = Math.max(Math.abs(dx), Math.abs(dy));
+    return {
+      ...r,
+      endX: r.startX + Math.sign(dx || 1) * m,
+      endY: r.startY + Math.sign(dy || 1) * m,
+    };
   };
 
   const onPointerUp = () => {
@@ -152,22 +209,46 @@ export const AnnotationLayer: React.FC<Props> = ({ pageIndex, pageWidth, pageHei
       return;
     }
     if (dragRect) {
-      const x = Math.min(dragRect.startX, dragRect.endX);
-      const y = Math.min(dragRect.startY, dragRect.endY);
-      const w = Math.abs(dragRect.endX - dragRect.startX);
-      const h = Math.abs(dragRect.endY - dragRect.startY);
-      if (w >= DRAG_THRESHOLD && h >= DRAG_THRESHOLD) {
-        const ann = buildAnnotation(tool, pageIndex, x, y, w, h);
+      const cr = constrainRect(dragRect, tool);
+      const x = Math.min(cr.startX, cr.endX);
+      const y = Math.min(cr.startY, cr.endY);
+      const w = Math.abs(cr.endX - cr.startX);
+      const h = Math.abs(cr.endY - cr.startY);
+      if ((tool === 'line' || tool === 'arrow') ? (w >= DRAG_THRESHOLD || h >= DRAG_THRESHOLD) : (w >= DRAG_THRESHOLD && h >= DRAG_THRESHOLD)) {
+        const ann = buildAnnotation(
+          tool,
+          pageIndex,
+          x,
+          y,
+          tool === 'line' || tool === 'arrow' ? Math.max(w, 4) : w,
+          tool === 'line' || tool === 'arrow' ? Math.max(h, 4) : h,
+        );
         if (ann) {
           addAnnotation(ann);
-          if (tool === 'text') {
-            // After placing text, switch to select so user can immediately type
+          if (tool === 'text' || tool === 'note') {
+            // After placing text/note, switch to select so user can immediately type
+            setTool('select');
+          }
+          if (tool === 'check' || tool === 'cross') {
             setTool('select');
           }
         }
       } else if (tool === 'text') {
         // Click without drag → spawn a default-sized text box
         const ann = buildAnnotation(tool, pageIndex, x, y, 160, 28);
+        if (ann) {
+          addAnnotation(ann);
+          setTool('select');
+        }
+      } else if (tool === 'note') {
+        // Click without drag → spawn a default-sized sticky note
+        const ann = buildAnnotation(tool, pageIndex, x, y, 160, 100);
+        if (ann) {
+          addAnnotation(ann);
+          setTool('select');
+        }
+      } else if (tool === 'check' || tool === 'cross') {
+        const ann = buildAnnotation(tool, pageIndex, x, y, 26, 26);
         if (ann) {
           addAnnotation(ann);
           setTool('select');
@@ -192,16 +273,76 @@ export const AnnotationLayer: React.FC<Props> = ({ pageIndex, pageWidth, pageHei
   // Live drag preview rectangle (for shape/whiteout/text)
   let preview: React.ReactNode = null;
   if (dragRect) {
-    const x = Math.min(dragRect.startX, dragRect.endX) * scale;
-    const y = Math.min(dragRect.startY, dragRect.endY) * scale;
-    const w = Math.abs(dragRect.endX - dragRect.startX) * scale;
-    const h = Math.abs(dragRect.endY - dragRect.startY) * scale;
-    preview = (
-      <div
-        className="absolute pointer-events-none border border-indigo-400 bg-indigo-400/10"
-        style={{ left: x, top: y, width: w, height: h }}
-      />
-    );
+    const cr = constrainRect(dragRect, tool);
+    const x = Math.min(cr.startX, cr.endX) * scale;
+    const y = Math.min(cr.startY, cr.endY) * scale;
+    const w = Math.abs(cr.endX - cr.startX) * scale;
+    const h = Math.abs(cr.endY - cr.startY) * scale;
+    if (tool === 'line' || tool === 'arrow') {
+      const previewW = Math.max(w, 4 * scale);
+      const previewH = Math.max(h, 4 * scale);
+      preview = (
+        <svg
+          className="absolute pointer-events-none overflow-visible"
+          style={{ left: x, top: y, width: previewW, height: previewH }}
+        >
+          {tool === 'arrow' && (
+            <defs>
+              <marker
+                id="draft-arrow"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#818cf8" />
+              </marker>
+            </defs>
+          )}
+          <line
+            x1="0"
+            y1="100%"
+            x2="100%"
+            y2="0"
+            stroke="#818cf8"
+            strokeWidth={2 * scale}
+            strokeLinecap="round"
+            markerEnd={tool === 'arrow' ? 'url(#draft-arrow)' : undefined}
+          />
+        </svg>
+      );
+    } else if (tool === 'check' || tool === 'cross') {
+      preview = (
+        <svg
+          className="absolute pointer-events-none overflow-visible"
+          style={{ left: x, top: y, width: Math.max(w, 20), height: Math.max(h, 20) }}
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          {tool === 'check' ? (
+            <path d="M 14 55 L 40 80 L 86 20" stroke="#4ade80" strokeWidth="10" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          ) : (
+            <>
+              <line x1="20" y1="20" x2="80" y2="80" stroke="#f87171" strokeWidth="10" strokeLinecap="round" />
+              <line x1="80" y1="20" x2="20" y2="80" stroke="#f87171" strokeWidth="10" strokeLinecap="round" />
+            </>
+          )}
+        </svg>
+      );
+    } else {
+      preview = (
+        <div
+          className={cn(
+            'absolute pointer-events-none border border-indigo-400 bg-indigo-400/10',
+            tool === 'whiteout' && 'bg-white/60 border-white',
+            tool === 'redact' && 'bg-black/50 border-black',
+          )}
+          style={{ left: x, top: y, width: w, height: h }}
+        />
+      );
+    }
   }
 
   // Live draw preview path
@@ -244,7 +385,7 @@ export const AnnotationLayer: React.FC<Props> = ({ pageIndex, pageWidth, pageHei
       ))}
       {preview}
       {drawPreview}
-      {selectedOnThisPage && (
+      {selectedOnThisPage && !selectedOnThisPage.locked && (
         <SelectionHandles annotation={selectedOnThisPage} pageWidth={pageWidth} pageHeight={pageHeight} />
       )}
     </div>

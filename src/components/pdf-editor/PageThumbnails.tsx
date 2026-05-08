@@ -14,7 +14,10 @@ interface Props {
 export const PageThumbnails: React.FC<Props> = ({ doc }) => {
   const pages = useEditorStore((s) => s.pages);
   const annotations = useEditorStore((s) => s.annotations);
-  const [activePage, setActivePage] = useState(0);
+  const activePage = useEditorStore((s) => s.activePage);
+  const setActivePage = useEditorStore((s) => s.setActivePage);
+  const deletedPages = useEditorStore((s) => s.deletedPages);
+  const pageRotations = useEditorStore((s) => s.pageRotations);
 
   // Track which page is closest to the top of the viewport via IntersectionObserver
   useEffect(() => {
@@ -34,7 +37,7 @@ export const PageThumbnails: React.FC<Props> = ({ doc }) => {
     );
     targets.forEach((t) => observer.observe(t));
     return () => observer.disconnect();
-  }, [pages.length]);
+  }, [pages.length, setActivePage]);
 
   const scrollToPage = (i: number) => {
     const el = document.querySelector<HTMLElement>(`[data-page-index="${i}"]`);
@@ -47,6 +50,7 @@ export const PageThumbnails: React.FC<Props> = ({ doc }) => {
         Pages
       </p>
       {pages.map((p, i) => {
+        if (deletedPages.includes(i)) return null;
         const annCount = Object.values(annotations).filter((a) => a.pageIndex === i).length;
         return (
           <ThumbnailCard
@@ -57,6 +61,7 @@ export const PageThumbnails: React.FC<Props> = ({ doc }) => {
             height={p.height}
             active={activePage === i}
             annCount={annCount}
+            rotation={pageRotations[i] ?? 0}
             onClick={() => scrollToPage(i)}
           />
         );
@@ -72,10 +77,11 @@ interface CardProps {
   height: number;
   active: boolean;
   annCount: number;
+  rotation: number;
   onClick: () => void;
 }
 
-const ThumbnailCard: React.FC<CardProps> = ({ doc, pageIndex, width, height, active, annCount, onClick }) => {
+const ThumbnailCard: React.FC<CardProps> = ({ doc, pageIndex, width, height, active, annCount, rotation, onClick }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLButtonElement>(null);
   const [rendered, setRendered] = useState(false);
@@ -107,8 +113,11 @@ const ThumbnailCard: React.FC<CardProps> = ({ doc, pageIndex, width, height, act
     };
   }, [doc, pageIndex, rendered]);
 
-  const w = Math.round(width * THUMB_SCALE);
-  const h = Math.round(height * THUMB_SCALE);
+  const isQuarter = rotation === 90 || rotation === 270;
+  const w = Math.round((isQuarter ? height : width) * THUMB_SCALE);
+  const h = Math.round((isQuarter ? width : height) * THUMB_SCALE);
+  const innerW = Math.round(width * THUMB_SCALE);
+  const innerH = Math.round(height * THUMB_SCALE);
 
   return (
     <button
@@ -128,7 +137,18 @@ const ThumbnailCard: React.FC<CardProps> = ({ doc, pageIndex, width, height, act
         )}
         style={{ width: w, height: h }}
       >
-        <canvas ref={canvasRef} className="block w-full h-full" />
+        <div
+          className="absolute origin-center"
+          style={{
+            width: innerW,
+            height: innerH,
+            left: '50%',
+            top: '50%',
+            transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+          }}
+        >
+          <canvas ref={canvasRef} className="block w-full h-full" />
+        </div>
         {annCount > 0 && (
           <span
             className="absolute top-1 right-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-indigo-500 text-white text-[10px] font-bold shadow-sm"

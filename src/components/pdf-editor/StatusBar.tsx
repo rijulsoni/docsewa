@@ -10,14 +10,17 @@ export const StatusBar: React.FC = () => {
   const tool = useEditorStore((s) => s.tool);
   const scale = useEditorStore((s) => s.scale);
   const past = useEditorStore((s) => s.past);
+  const activePage = useEditorStore((s) => s.activePage);
+  const deletedPages = useEditorStore((s) => s.deletedPages);
 
   const annCount = Object.keys(annotations).length;
+  const visiblePages = pages.length - deletedPages.length;
 
   return (
     <div className="flex items-center justify-between gap-4 px-4 py-1.5 border-t border-white/[0.06] bg-[#08080b]/95 backdrop-blur-xl text-[11px] text-white/55 font-medium">
       <div className="flex items-center gap-4">
         <Pill label="Tool" value={tool} accent="indigo" />
-        <Pill label="Pages" value={String(pages.length)} />
+        <Pill label="Page" value={`${Math.min(activePage + 1, pages.length)}/${visiblePages}`} />
         <Pill
           label="Annotations"
           value={String(annCount)}

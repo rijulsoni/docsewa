@@ -5,10 +5,18 @@ export type Tool =
   | 'highlighter'
   | 'rectangle'
   | 'ellipse'
+  | 'line'
   | 'arrow'
+  | 'check'
+  | 'cross'
   | 'image'
   | 'whiteout'
-  | 'signature';
+  | 'redact'
+  | 'signature'
+  | 'note'
+  | 'stamp';
+
+export type TextFontFamily = 'helvetica' | 'times' | 'courier';
 
 /** A single 2D path point in PDF coordinates (origin top-left). */
 export type Point = [number, number];
@@ -21,6 +29,9 @@ interface BaseAnnotation {
   y: number;
   w: number;
   h: number;
+  zIndex?: number;
+  opacity?: number;
+  locked?: boolean;
 }
 
 export interface TextAnnotation extends BaseAnnotation {
@@ -28,6 +39,9 @@ export interface TextAnnotation extends BaseAnnotation {
   text: string;
   fontSize: number;
   color: string;
+  fontFamily?: TextFontFamily;
+  background?: string | null;
+  backgroundOpacity?: number;
   bold?: boolean;
   italic?: boolean;
 }
@@ -40,7 +54,7 @@ export interface ImageAnnotation extends BaseAnnotation {
 
 export interface ShapeAnnotation extends BaseAnnotation {
   type: 'shape';
-  shape: 'rectangle' | 'ellipse' | 'arrow';
+  shape: 'rectangle' | 'ellipse' | 'line' | 'arrow';
   stroke: string;
   strokeWidth: number;
   fill?: string | null;
@@ -60,12 +74,47 @@ export interface WhiteoutAnnotation extends BaseAnnotation {
   type: 'whiteout';
 }
 
+export interface RedactionAnnotation extends BaseAnnotation {
+  type: 'redaction';
+}
+
+export interface MarkAnnotation extends BaseAnnotation {
+  type: 'mark';
+  mark: 'check' | 'cross';
+  color: string;
+  strokeWidth: number;
+}
+
+export interface StickyNoteAnnotation extends BaseAnnotation {
+  type: 'note';
+  text: string;
+  /** Background tint (the "paper"). Default yellow. */
+  background: string;
+  /** Text colour. */
+  color: string;
+  fontSize: number;
+}
+
+export interface StampAnnotation extends BaseAnnotation {
+  type: 'stamp';
+  text: string;
+  /** Border + text colour. */
+  color: string;
+  fontSize: number;
+  /** Rotation in degrees, e.g. -8 for that classic "stamped at an angle" feel. */
+  rotation?: number;
+}
+
 export type Annotation =
   | TextAnnotation
   | ImageAnnotation
   | ShapeAnnotation
   | DrawAnnotation
-  | WhiteoutAnnotation;
+  | WhiteoutAnnotation
+  | RedactionAnnotation
+  | MarkAnnotation
+  | StickyNoteAnnotation
+  | StampAnnotation;
 
 export interface PageInfo {
   /** Width in PDF points. */

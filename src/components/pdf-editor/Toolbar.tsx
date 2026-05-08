@@ -1,11 +1,12 @@
 "use client"
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   MousePointer2, Type, Pencil, Highlighter, Square, Circle, ArrowRight,
   Image as ImageIcon, Eraser, PenLine, Undo2, Redo2, Plus, Minus, Download,
+  StickyNote, Stamp, Check, X,
 } from 'lucide-react';
-import type { Tool } from './types';
+import type { Tool, Annotation } from './types';
 import { useEditorStore, nextId } from './store';
 import { cn } from '@/lib/utils';
 
@@ -32,6 +33,7 @@ const TOOL_GROUPS: ToolGroup[] = [
     label: 'Annotate',
     tools: [
       { key: 'text',        icon: <Type className="h-4 w-4" />,        label: 'Text',         shortcut: 'T' },
+      { key: 'note',        icon: <StickyNote className="h-4 w-4" />,  label: 'Sticky note',  shortcut: 'N' },
       { key: 'pen',         icon: <Pencil className="h-4 w-4" />,      label: 'Pen',          shortcut: 'P' },
       { key: 'highlighter', icon: <Highlighter className="h-4 w-4" />, label: 'Highlighter',  shortcut: 'H' },
     ],
@@ -41,6 +43,7 @@ const TOOL_GROUPS: ToolGroup[] = [
     tools: [
       { key: 'rectangle', icon: <Square className="h-4 w-4" />,     label: 'Rectangle', shortcut: 'R' },
       { key: 'ellipse',   icon: <Circle className="h-4 w-4" />,     label: 'Ellipse',   shortcut: 'O' },
+      { key: 'line',      icon: <Minus className="h-4 w-4" />,      label: 'Line',      shortcut: 'L' },
       { key: 'arrow',     icon: <ArrowRight className="h-4 w-4" />, label: 'Arrow',     shortcut: 'A' },
     ],
   },
@@ -49,12 +52,21 @@ const TOOL_GROUPS: ToolGroup[] = [
     tools: [
       { key: 'image',     icon: <ImageIcon className="h-4 w-4" />, label: 'Image',     shortcut: 'I' },
       { key: 'signature', icon: <PenLine className="h-4 w-4" />,   label: 'Signature', shortcut: 'S' },
+      { key: 'stamp',     icon: <Stamp className="h-4 w-4" />,     label: 'Stamp',     shortcut: 'M' },
+    ],
+  },
+  {
+    label: 'Forms',
+    tools: [
+      { key: 'check', icon: <Check className="h-4 w-4" />, label: 'Check mark', shortcut: 'C' },
+      { key: 'cross', icon: <X className="h-4 w-4" />,     label: 'Cross mark', shortcut: 'X' },
     ],
   },
   {
     label: 'Edit',
     tools: [
       { key: 'whiteout', icon: <Eraser className="h-4 w-4" />, label: 'Whiteout', shortcut: 'W' },
+      { key: 'redact',   icon: <Square className="h-4 w-4" />, label: 'Blackout', shortcut: 'B' },
     ],
   },
 ];
@@ -75,8 +87,29 @@ export const Toolbar: React.FC<Props> = ({ onSave, onSign, isSaving }) => {
   const scale = useEditorStore((s) => s.scale);
   const setScale = useEditorStore((s) => s.setScale);
   const addAnnotation = useEditorStore((s) => s.addAnnotation);
+  const pages = useEditorStore((s) => s.pages);
+  const activePage = useEditorStore((s) => s.activePage);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [stampOpen, setStampOpen] = useState(false);
+  const stampRef = useRef<HTMLDivElement>(null);
+
+  // Close stamp popover on outside click / Esc
+  useEffect(() => {
+    if (!stampOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (!stampRef.current?.contains(e.target as Node)) setStampOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setStampOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [stampOpen]);
 
   const onToolClick = (k: Tool) => {
     if (k === 'image') {
@@ -87,7 +120,34 @@ export const Toolbar: React.FC<Props> = ({ onSave, onSign, isSaving }) => {
       onSign();
       return;
     }
+    if (k === 'stamp') {
+      setStampOpen((v) => !v);
+      return;
+    }
     setTool(k);
+  };
+
+  const placeStamp = (text: string, color: string) => {
+    const page = pages[activePage] ?? pages[0];
+    const fontSize = 28;
+    // Estimate stamp box size from text length (rough: 15pt per char + padding)
+    const estW = Math.max(140, text.length * 14 + 32);
+    const estH = fontSize + 24;
+    const x = page ? Math.max(0, (page.width - estW) / 2) : 50;
+    const y = page ? Math.max(0, (page.height - estH) / 2) : 50;
+    const a: Annotation = {
+      type: 'stamp',
+      id: nextId(),
+      pageIndex: activePage,
+      x, y, w: estW, h: estH,
+      text,
+      color,
+      fontSize,
+      rotation: -8,
+    };
+    addAnnotation(a);
+    setTool('select');
+    setStampOpen(false);
   };
 
   const handleImagePicked = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,14 +165,19 @@ export const Toolbar: React.FC<Props> = ({ onSave, onSign, isSaving }) => {
       img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
       img.src = dataUrl;
     });
-    const targetW = Math.min(300, dims.w);
+    // Place on the currently visible page, sized to fit ~50% of page width, centered
+    const page = pages[activePage] ?? pages[0];
+    const maxW = Math.min(300, (page?.width ?? 600) * 0.6);
+    const targetW = Math.min(maxW, dims.w);
     const targetH = (targetW / dims.w) * dims.h;
+    const x = page ? Math.max(0, (page.width - targetW) / 2) : 50;
+    const y = page ? Math.max(0, (page.height - targetH) / 2) : 50;
     addAnnotation({
       type: 'image',
       id: nextId(),
-      pageIndex: 0,
-      x: 50,
-      y: 50,
+      pageIndex: activePage,
+      x,
+      y,
       w: targetW,
       h: targetH,
       src: dataUrl,
@@ -123,22 +188,24 @@ export const Toolbar: React.FC<Props> = ({ onSave, onSign, isSaving }) => {
   };
 
   return (
-    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border border-white/[0.08] bg-[#0a0a0d]/95 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div ref={stampRef} className="relative flex flex-wrap items-center gap-1.5 px-3 py-1.5 rounded-2xl border border-white/[0.08] bg-[#0a0a0d]/95 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)]">
       {TOOL_GROUPS.map((g, gi) => (
         <React.Fragment key={g.label}>
           {gi > 0 && <Divider />}
-          <div className="flex items-center gap-0.5" role="group" aria-label={g.label}>
+          <div className="flex shrink-0 items-center gap-0.5" role="group" aria-label={g.label}>
             {g.tools.map((t) => (
               <ToolButton
                 key={t.key}
                 tool={t}
-                active={tool === t.key}
+                active={tool === t.key || (t.key === 'stamp' && stampOpen)}
                 onClick={() => onToolClick(t.key)}
               />
             ))}
           </div>
         </React.Fragment>
       ))}
+
+      {stampOpen && <StampsPopover onPick={placeStamp} />}
 
       <Divider />
 
@@ -197,6 +264,58 @@ export const Toolbar: React.FC<Props> = ({ onSave, onSign, isSaving }) => {
 
 const Divider: React.FC = () => (
   <div className="w-px h-6 bg-white/[0.08] mx-1 shrink-0" />
+);
+
+const STAMP_PRESETS: { text: string; color: string }[] = [
+  { text: 'DRAFT',         color: '#dc2626' },
+  { text: 'APPROVED',      color: '#16a34a' },
+  { text: 'CONFIDENTIAL',  color: '#dc2626' },
+  { text: 'REVIEWED',      color: '#2563eb' },
+  { text: 'REJECTED',      color: '#b91c1c' },
+  { text: 'PAID',          color: '#15803d' },
+  { text: 'URGENT',        color: '#ea580c' },
+  { text: 'COPY',          color: '#475569' },
+  { text: 'FOR REVIEW',    color: '#7c3aed' },
+  { text: 'FINAL',         color: '#0891b2' },
+  { text: 'VOID',          color: '#991b1b' },
+  { text: 'SIGNED',        color: '#0f766e' },
+  { text: 'RECEIVED',      color: '#2563eb' },
+  { text: 'DUPLICATE',     color: '#475569' },
+];
+
+const StampsPopover: React.FC<{ onPick: (text: string, color: string) => void }> = ({ onPick }) => (
+  <div
+    role="dialog"
+    className="absolute top-full mt-2 right-3 z-50 w-[280px] rounded-2xl border border-white/[0.10] bg-[#0a0a0d]/98 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)] p-3"
+  >
+    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/55 px-1 pb-2">
+      Stamps · click to place
+    </p>
+    <div className="grid grid-cols-2 gap-2">
+      {STAMP_PRESETS.map((s) => (
+        <button
+          key={s.text}
+          onClick={() => onPick(s.text, s.color)}
+          className="group relative flex items-center justify-center px-2 py-2 rounded-lg border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/[0.16] transition-all"
+        >
+          <span
+            className="px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.10em] rounded-sm"
+            style={{
+              color: s.color,
+              border: `2px solid ${s.color}`,
+              boxShadow: `inset 0 0 0 1px ${s.color}`,
+              transform: 'rotate(-5deg)',
+            }}
+          >
+            {s.text}
+          </span>
+        </button>
+      ))}
+    </div>
+    <p className="text-[10px] text-white/40 px-1 pt-2 mt-2 border-t border-white/[0.06]">
+      Stamps drop on the visible page. Drag to reposition.
+    </p>
+  </div>
 );
 
 interface ToolButtonProps {
